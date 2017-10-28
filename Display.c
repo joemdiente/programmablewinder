@@ -434,6 +434,7 @@ void Compute() {
     EnableInputs = 0;
 
  //For Readability of Computations
+ // sample comment by mike
  V1 = IParameter[0];
  V2 = IParameter[1];
  I2 = FParameter[2];
