@@ -115,7 +115,8 @@ int MaxMenu,
     Pulse,
     test,
     RBPORTCHANGE,
-    i,x;
+    i,x,
+    temp;
 char itext[7],          //for IntToStr
      ftext[15];         //for FloatToStr
 unsigned char state;                   //For Rotary Encoder
@@ -348,6 +349,7 @@ delay_ms(500);
 ////////////////////////////////END OF MAIN PROGRAM////////////////////////////////////
 //////////////////////////////////INTERRUPT FUNCTION ///////////////////////////////////
 void interrupt() {
+  temp = portb;
 //  INT0 --- BACK MENU
   if (INTCON.INT0IF == 1 && EnableInputs == 1){
    if (Button(&PORTB,0,150,1)) {
@@ -421,6 +423,7 @@ void interrupt() {
     }
     prevState = state; //Save previous port b state.
    }
+     latb = temp;    // Prevent Mismatch Condition
      INTCON.RBIF = 0;
   ////////////////////////////////////////////////////////////////
   //End of ISR
@@ -430,7 +433,7 @@ void Compute() {
     float WeightWire1,WeightWire2,AvailableArea,diameter1,diameter2;
     float Pulse1st,Pulse2nd,NoOfTurns1,NoOfTurns2,WindingLength,microstep;
     int PrimaryGauge,SecondaryGauge,Perimeter,CoreWidth,CoreLength,WindingHeight;
-    int V1,V2,Power,delaystpr1,delaystpr2;
+    int V1,V2,Power;
     EnableInputs = 0;
 
  //For Readability of Computations
@@ -443,7 +446,7 @@ void Compute() {
  WindingHeight = IParameter[5];
  WindingLength = (float)IParameter[6];
  WindingLength = WindingLength - 0.25f; //allowance to prevent wire going out of bounds
- Microstep = 280.0f;
+ Microstep = 310.0f;
      Lcd_Cmd(_Lcd_Clear);
      Lcd_Out(1,1,"Computing");
 
@@ -518,8 +521,6 @@ void Compute() {
  FParameter[17] = AvailableArea;
  FParameter[18] = TurnsPerLayer1;
  FParameter[19] = TurnsPerLayer2;
- IParameter[20] = delaystpr1;
- IParameter[21] = delaystpr2;
  FParameter[22] = Pulse1st;
  FParameter[23] = Pulse2nd;
      Lcd_Chr_Cp('.');
@@ -568,11 +569,12 @@ latc.f6 = 1;                    /////// TURN ON BREAK
 delay_ms(50);                   //delay to stop stalling of motor
 latc.f7 = 1;                   /////// TURN ON MOTOR
  do {
-         IntToStr(TurnCount,itext);
-         LCD_Out(2,10,itext);
+
          if(Runstepper == 1) {
          RunStepper = 0;
          Stepper(PulsesPerTurn);
+         IntToStr(TurnCount,itext);
+         LCD_Out(2,10,itext);
          }
          if (TurnCount >= nLayers) {
          nlayers = nlayers + TurnsPerLayer;

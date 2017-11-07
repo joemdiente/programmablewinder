@@ -105,7 +105,8 @@ int MaxMenu,
  Pulse,
  test,
  RBPORTCHANGE,
- i,x;
+ i,x,
+ temp;
 char itext[7],
  ftext[15];
 unsigned char state;
@@ -338,6 +339,7 @@ delay_ms(500);
 
 
 void interrupt() {
+ temp = portb;
 
  if (INTCON.INT0IF == 1 && EnableInputs == 1){
  if (Button(&PORTB,0,150,1)) {
@@ -411,6 +413,7 @@ void interrupt() {
  }
  prevState = state;
  }
+ latb = temp;
  INTCON.RBIF = 0;
 
 
@@ -420,8 +423,9 @@ void Compute() {
  float WeightWire1,WeightWire2,AvailableArea,diameter1,diameter2;
  float Pulse1st,Pulse2nd,NoOfTurns1,NoOfTurns2,WindingLength,microstep;
  int PrimaryGauge,SecondaryGauge,Perimeter,CoreWidth,CoreLength,WindingHeight;
- int V1,V2,Power,delaystpr1,delaystpr2;
+ int V1,V2,Power;
  EnableInputs = 0;
+
 
 
  V1 = IParameter[0];
@@ -432,7 +436,7 @@ void Compute() {
  WindingHeight = IParameter[5];
  WindingLength = (float)IParameter[6];
  WindingLength = WindingLength - 0.25f;
- Microstep = 280.0f;
+ Microstep = 310.0f;
  Lcd_Cmd(_Lcd_Clear);
  Lcd_Out(1,1,"Computing");
 
@@ -507,8 +511,6 @@ void Compute() {
  FParameter[17] = AvailableArea;
  FParameter[18] = TurnsPerLayer1;
  FParameter[19] = TurnsPerLayer2;
- IParameter[20] = delaystpr1;
- IParameter[21] = delaystpr2;
  FParameter[22] = Pulse1st;
  FParameter[23] = Pulse2nd;
  Lcd_Chr_Cp('.');
@@ -557,11 +559,12 @@ latc.f6 = 1;
 delay_ms(50);
 latc.f7 = 1;
  do {
- IntToStr(TurnCount,itext);
- LCD_Out(2,10,itext);
+
  if(Runstepper == 1) {
  RunStepper = 0;
  Stepper(PulsesPerTurn);
+ IntToStr(TurnCount,itext);
+ LCD_Out(2,10,itext);
  }
  if (TurnCount >= nLayers) {
  nlayers = nlayers + TurnsPerLayer;

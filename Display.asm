@@ -2226,6 +2226,10 @@ L_end_main:
 
 _interrupt:
 
+	MOVF        PORTB+0, 0 
+	MOVWF       _temp+0 
+	MOVLW       0
+	MOVWF       _temp+1 
 	BTFSS       INTCON+0, 1 
 	GOTO        L_interrupt68
 	MOVLW       0
@@ -2949,6 +2953,8 @@ L_interrupt93:
 	MOVF        _state+0, 0 
 	MOVWF       interrupt_prevState_L1+0 
 L_interrupt92:
+	MOVF        _temp+0, 0 
+	MOVWF       LATB+0 
 	BCF         INTCON+0, 0 
 L_end_interrupt:
 L__interrupt221:
@@ -3021,7 +3027,7 @@ _Compute:
 	MOVWF       Compute_microstep_L0+0 
 	MOVLW       0
 	MOVWF       Compute_microstep_L0+1 
-	MOVLW       12
+	MOVLW       27
 	MOVWF       Compute_microstep_L0+2 
 	MOVLW       135
 	MOVWF       Compute_microstep_L0+3 
@@ -3970,14 +3976,6 @@ L_Compute144:
 	MOVWF       _FParameter+78 
 	MOVF        Compute_TurnsPerLayer2_L0+3, 0 
 	MOVWF       _FParameter+79 
-	MOVF        Compute_delaystpr1_L0+0, 0 
-	MOVWF       _IParameter+40 
-	MOVF        Compute_delaystpr1_L0+1, 0 
-	MOVWF       _IParameter+41 
-	MOVF        Compute_delaystpr2_L0+0, 0 
-	MOVWF       _IParameter+42 
-	MOVF        Compute_delaystpr2_L0+1, 0 
-	MOVWF       _IParameter+43 
 	MOVF        Compute_Pulse1st_L0+0, 0 
 	MOVWF       _FParameter+88 
 	MOVF        Compute_Pulse1st_L0+1, 0 
@@ -4247,6 +4245,22 @@ L_WindingProcess153:
 	BRA         L_WindingProcess153
 	BSF         LATC+0, 7 
 L_WindingProcess154:
+	MOVLW       0
+	XORWF       _RunStepper+1, 0 
+	BTFSS       STATUS+0, 2 
+	GOTO        L__WindingProcess259
+	MOVLW       1
+	XORWF       _RunStepper+0, 0 
+L__WindingProcess259:
+	BTFSS       STATUS+0, 2 
+	GOTO        L_WindingProcess157
+	CLRF        _RunStepper+0 
+	CLRF        _RunStepper+1 
+	MOVF        FARG_WindingProcess_PulsesPerTurn+0, 0 
+	MOVWF       FARG_stepper_NoOfPulses+0 
+	MOVF        FARG_WindingProcess_PulsesPerTurn+1, 0 
+	MOVWF       FARG_stepper_NoOfPulses+1 
+	CALL        _stepper+0, 0
 	MOVF        _TurnCount+0, 0 
 	MOVWF       FARG_IntToStr_input+0 
 	MOVF        _TurnCount+1, 0 
@@ -4265,22 +4279,6 @@ L_WindingProcess154:
 	MOVLW       hi_addr(_itext+0)
 	MOVWF       FARG_Lcd_Out_text+1 
 	CALL        _Lcd_Out+0, 0
-	MOVLW       0
-	XORWF       _RunStepper+1, 0 
-	BTFSS       STATUS+0, 2 
-	GOTO        L__WindingProcess259
-	MOVLW       1
-	XORWF       _RunStepper+0, 0 
-L__WindingProcess259:
-	BTFSS       STATUS+0, 2 
-	GOTO        L_WindingProcess157
-	CLRF        _RunStepper+0 
-	CLRF        _RunStepper+1 
-	MOVF        FARG_WindingProcess_PulsesPerTurn+0, 0 
-	MOVWF       FARG_stepper_NoOfPulses+0 
-	MOVF        FARG_WindingProcess_PulsesPerTurn+1, 0 
-	MOVWF       FARG_stepper_NoOfPulses+1 
-	CALL        _stepper+0, 0
 L_WindingProcess157:
 	MOVF        _TurnCount+0, 0 
 	MOVWF       R0 
