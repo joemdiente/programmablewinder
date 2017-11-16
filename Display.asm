@@ -164,18 +164,18 @@ _ftswd:
 	MOVF        R8, 0 
 	SUBWF       R3, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__ftswd182
+	GOTO        L__ftswd194
 	MOVF        R7, 0 
 	SUBWF       R2, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__ftswd182
+	GOTO        L__ftswd194
 	MOVF        R6, 0 
 	SUBWF       R1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__ftswd182
+	GOTO        L__ftswd194
 	MOVF        R5, 0 
 	SUBWF       R0, 0 
-L__ftswd182:
+L__ftswd194:
 	BTFSC       STATUS+0, 0 
 	GOTO        L_ftswd6
 	MOVLW       1
@@ -189,10 +189,10 @@ L_ftswd7:
 	MOVLW       0
 	XORWF       R0, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__ftswd183
+	GOTO        L__ftswd195
 	MOVF        FARG_ftswd_dec+0, 0 
 	XORWF       ftswd_i_L0+0, 0 
-L__ftswd183:
+L__ftswd195:
 	BTFSS       STATUS+0, 2 
 	GOTO        L_ftswd10
 	MOVF        ftswd_i_L0+0, 0 
@@ -287,7 +287,7 @@ L_ftswd9:
 	IORWF       ftswd_n_L0+3, 0 
 	BTFSS       STATUS+0, 2 
 	GOTO        L_ftswd7
-L__ftswd161:
+L__ftswd172:
 	MOVF        ftswd_tmp_L0+0, 1 
 	BTFSC       STATUS+0, 2 
 	GOTO        L_ftswd13
@@ -378,10 +378,10 @@ L_steppertest17:
 	XORWF       _Pulse+1, 0 
 	SUBWF       R0, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__steppertest185
+	GOTO        L__steppertest197
 	MOVF        _Pulse+0, 0 
 	SUBWF       FARG_steppertest_NoOfPulses+0, 0 
-L__steppertest185:
+L__steppertest197:
 	BTFSS       STATUS+0, 0 
 	GOTO        L_steppertest18
 	BSF         LATC+0, 1 
@@ -412,24 +412,26 @@ L_stepper20:
 	XORWF       _Pulse+1, 0 
 	SUBWF       R0, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__stepper187
+	GOTO        L__stepper199
 	MOVF        _Pulse+0, 0 
 	SUBWF       FARG_stepper_NoOfPulses+0, 0 
-L__stepper187:
+L__stepper199:
 	BTFSS       STATUS+0, 0 
 	GOTO        L_stepper21
 	BSF         LATC+0, 1 
-	MOVLW       83
+	MOVLW       66
 	MOVWF       R13, 0
 L_stepper23:
 	DECFSZ      R13, 1, 1
 	BRA         L_stepper23
+	NOP
 	BCF         LATC+0, 1 
-	MOVLW       83
+	MOVLW       66
 	MOVWF       R13, 0
 L_stepper24:
 	DECFSZ      R13, 1, 1
 	BRA         L_stepper24
+	NOP
 	INFSNZ      _Pulse+0, 1 
 	INCF        _Pulse+1, 1 
 	GOTO        L_stepper20
@@ -496,17 +498,20 @@ L_main26:
 	NOP
 	BCF         UCON+0, 3 
 	BSF         UCFG+0, 3 
-	BCF         PORTC+0, 0 
+	BCF         LATC+0, 0 
 	CLRF        _RunStepper+0 
 	CLRF        _RunStepper+1 
-	BCF         PORTC+0, 7 
-	BCF         PORTC+0, 6 
+	BCF         LATC+0, 7 
+	BCF         LATC+0, 6 
+	MOVLW       12
+	MOVWF       FARG_Lcd_Cmd_out_char+0 
+	CALL        _Lcd_Cmd+0, 0
 	MOVLW       1
 	MOVWF       FARG_Lcd_Cmd_out_char+0 
 	CALL        _Lcd_Cmd+0, 0
 	MOVLW       1
 	MOVWF       FARG_Lcd_Out_row+0 
-	MOVLW       3
+	MOVLW       16
 	MOVWF       FARG_Lcd_Out_column+0 
 	MOVLW       ?lstr28_Display+0
 	MOVWF       FARG_Lcd_Out_text+0 
@@ -515,18 +520,18 @@ L_main26:
 	CALL        _Lcd_Out+0, 0
 	MOVLW       2
 	MOVWF       FARG_Lcd_Out_row+0 
-	MOVLW       4
+	MOVLW       17
 	MOVWF       FARG_Lcd_Out_column+0 
 	MOVLW       ?lstr29_Display+0
 	MOVWF       FARG_Lcd_Out_text+0 
 	MOVLW       hi_addr(?lstr29_Display+0)
 	MOVWF       FARG_Lcd_Out_text+1 
 	CALL        _Lcd_Out+0, 0
-	MOVLW       7
+	MOVLW       3
 	MOVWF       R11, 0
-	MOVLW       88
+	MOVLW       138
 	MOVWF       R12, 0
-	MOVLW       89
+	MOVLW       85
 	MOVWF       R13, 0
 L_main27:
 	DECFSZ      R13, 1, 1
@@ -537,9 +542,60 @@ L_main27:
 	BRA         L_main27
 	NOP
 	NOP
+	CLRF        _i+0 
+	CLRF        _i+1 
+L_main28:
+	MOVLW       128
+	XORWF       _i+1, 0 
+	MOVWF       R0 
+	MOVLW       128
+	SUBWF       R0, 0 
+	BTFSS       STATUS+0, 2 
+	GOTO        L__main201
+	MOVLW       32
+	SUBWF       _i+0, 0 
+L__main201:
+	BTFSC       STATUS+0, 0 
+	GOTO        L_main29
+	MOVLW       24
+	MOVWF       FARG_Lcd_Cmd_out_char+0 
+	CALL        _Lcd_Cmd+0, 0
+	MOVLW       2
+	MOVWF       R11, 0
+	MOVLW       231
+	MOVWF       R12, 0
+	MOVLW       0
+	MOVWF       R13, 0
+L_main31:
+	DECFSZ      R13, 1, 1
+	BRA         L_main31
+	DECFSZ      R12, 1, 1
+	BRA         L_main31
+	DECFSZ      R11, 1, 1
+	BRA         L_main31
+	NOP
+	INFSNZ      _i+0, 1 
+	INCF        _i+1, 1 
+	GOTO        L_main28
+L_main29:
 	MOVLW       1
 	MOVWF       FARG_Lcd_Cmd_out_char+0 
 	CALL        _Lcd_Cmd+0, 0
+	CLRF        _i+0 
+	CLRF        _i+1 
+L_main32:
+	MOVLW       128
+	XORWF       _i+1, 0 
+	MOVWF       R0 
+	MOVLW       128
+	SUBWF       R0, 0 
+	BTFSS       STATUS+0, 2 
+	GOTO        L__main202
+	MOVLW       4
+	SUBWF       _i+0, 0 
+L__main202:
+	BTFSC       STATUS+0, 0 
+	GOTO        L_main33
 	MOVLW       1
 	MOVWF       FARG_Lcd_Out_row+0 
 	MOVLW       2
@@ -558,66 +614,81 @@ L_main27:
 	MOVLW       hi_addr(?lstr31_Display+0)
 	MOVWF       FARG_Lcd_Out_text+1 
 	CALL        _Lcd_Out+0, 0
-	MOVLW       7
+	MOVLW       4
 	MOVWF       R11, 0
-	MOVLW       88
+	MOVLW       44
 	MOVWF       R12, 0
-	MOVLW       89
+	MOVLW       171
 	MOVWF       R13, 0
-L_main28:
+L_main35:
 	DECFSZ      R13, 1, 1
-	BRA         L_main28
+	BRA         L_main35
 	DECFSZ      R12, 1, 1
-	BRA         L_main28
+	BRA         L_main35
 	DECFSZ      R11, 1, 1
-	BRA         L_main28
+	BRA         L_main35
 	NOP
 	NOP
+	MOVLW       1
+	MOVWF       FARG_Lcd_Cmd_out_char+0 
+	CALL        _Lcd_Cmd+0, 0
+	MOVLW       4
+	MOVWF       R11, 0
+	MOVLW       44
+	MOVWF       R12, 0
+	MOVLW       171
+	MOVWF       R13, 0
+L_main36:
+	DECFSZ      R13, 1, 1
+	BRA         L_main36
+	DECFSZ      R12, 1, 1
+	BRA         L_main36
+	DECFSZ      R11, 1, 1
+	BRA         L_main36
+	NOP
+	NOP
+	INFSNZ      _i+0, 1 
+	INCF        _i+1, 1 
+	GOTO        L_main32
+L_main33:
 	CLRF        _CountingOn+0 
 	CLRF        _CountingOn+1 
-	MOVLW       30
-	MOVWF       _MaxMenu+0 
-	MOVLW       0
-	MOVWF       _MaxMenu+1 
 	CLRF        _MenuNo+0 
 	CLRF        _MenuNo+1 
-	MOVLW       7
+L_main37:
+	MOVLW       3
 	MOVWF       R11, 0
-	MOVLW       88
+	MOVLW       138
 	MOVWF       R12, 0
-	MOVLW       89
+	MOVLW       85
 	MOVWF       R13, 0
-L_main29:
+L_main40:
 	DECFSZ      R13, 1, 1
-	BRA         L_main29
+	BRA         L_main40
 	DECFSZ      R12, 1, 1
-	BRA         L_main29
+	BRA         L_main40
 	DECFSZ      R11, 1, 1
-	BRA         L_main29
+	BRA         L_main40
 	NOP
 	NOP
-L_main30:
 	MOVLW       1
 	MOVWF       _EnableInputs+0 
 	MOVLW       0
 	MOVWF       _EnableInputs+1 
 	MOVF        _MenuNo+1, 0 
-	SUBWF       _MaxMenu+1, 0 
+	SUBLW       0
 	BTFSS       STATUS+0, 2 
-	GOTO        L__main189
+	GOTO        L__main203
 	MOVF        _MenuNo+0, 0 
-	SUBWF       _MaxMenu+0, 0 
-L__main189:
+	SUBLW       27
+L__main203:
 	BTFSC       STATUS+0, 0 
-	GOTO        L_main33
+	GOTO        L_main41
 	CLRF        _MenuNo+0 
 	CLRF        _MenuNo+1 
-L_main33:
-	MOVLW       12
-	MOVWF       FARG_Lcd_Cmd_out_char+0 
-	CALL        _Lcd_Cmd+0, 0
-	GOTO        L_main34
-L_main36:
+L_main41:
+	GOTO        L_main42
+L_main44:
 	MOVLW       3
 	MOVWF       R0 
 	MOVLW       0
@@ -666,8 +737,8 @@ L_main36:
 	MOVF        _Unit+1, 0 
 	MOVWF       FARG_IDisplay_c+1 
 	CALL        _IDisplay+0, 0
-	GOTO        L_main35
-L_main37:
+	GOTO        L_main43
+L_main45:
 	MOVLW       3
 	MOVWF       R0 
 	MOVLW       0
@@ -716,8 +787,8 @@ L_main37:
 	MOVF        _Unit+1, 0 
 	MOVWF       FARG_IDisplay_c+1 
 	CALL        _IDisplay+0, 0
-	GOTO        L_main35
-L_main38:
+	GOTO        L_main43
+L_main46:
 	MOVLW       3
 	MOVWF       R0 
 	MOVLW       0
@@ -773,8 +844,8 @@ L_main38:
 	MOVF        _Unit+3, 0 
 	MOVWF       FARG_FDisplay_c+1 
 	CALL        _FDisplay+0, 0
-	GOTO        L_main35
-L_main39:
+	GOTO        L_main43
+L_main47:
 	MOVLW       3
 	MOVWF       R0 
 	MOVLW       0
@@ -823,8 +894,8 @@ L_main39:
 	MOVF        _Unit+5, 0 
 	MOVWF       FARG_IDisplay_c+1 
 	CALL        _IDisplay+0, 0
-	GOTO        L_main35
-L_main40:
+	GOTO        L_main43
+L_main48:
 	MOVLW       3
 	MOVWF       R0 
 	MOVLW       0
@@ -873,8 +944,8 @@ L_main40:
 	MOVF        _Unit+5, 0 
 	MOVWF       FARG_IDisplay_c+1 
 	CALL        _IDisplay+0, 0
-	GOTO        L_main35
-L_main41:
+	GOTO        L_main43
+L_main49:
 	MOVLW       3
 	MOVWF       R0 
 	MOVLW       0
@@ -923,8 +994,8 @@ L_main41:
 	MOVF        _Unit+5, 0 
 	MOVWF       FARG_IDisplay_c+1 
 	CALL        _IDisplay+0, 0
-	GOTO        L_main35
-L_main42:
+	GOTO        L_main43
+L_main50:
 	MOVLW       3
 	MOVWF       R0 
 	MOVLW       0
@@ -973,11 +1044,11 @@ L_main42:
 	MOVF        _Unit+5, 0 
 	MOVWF       FARG_IDisplay_c+1 
 	CALL        _IDisplay+0, 0
-	GOTO        L_main35
-L_main43:
+	GOTO        L_main43
+L_main51:
 	CALL        _Compute+0, 0
-	GOTO        L_main35
-L_main44:
+	GOTO        L_main43
+L_main52:
 	MOVLW       3
 	MOVWF       R0 
 	MOVLW       0
@@ -1026,8 +1097,8 @@ L_main44:
 	MOVF        _Unit+15, 0 
 	MOVWF       FARG_IDisplay_c+1 
 	CALL        _IDisplay+0, 0
-	GOTO        L_main35
-L_main45:
+	GOTO        L_main43
+L_main53:
 	MOVLW       3
 	MOVWF       R0 
 	MOVLW       0
@@ -1083,8 +1154,8 @@ L_main45:
 	MOVF        _Unit+3, 0 
 	MOVWF       FARG_FDisplay_c+1 
 	CALL        _FDisplay+0, 0
-	GOTO        L_main35
-L_main46:
+	GOTO        L_main43
+L_main54:
 	MOVLW       3
 	MOVWF       R0 
 	MOVLW       0
@@ -1133,8 +1204,8 @@ L_main46:
 	MOVF        _Unit+5, 0 
 	MOVWF       FARG_IDisplay_c+1 
 	CALL        _IDisplay+0, 0
-	GOTO        L_main35
-L_main47:
+	GOTO        L_main43
+L_main55:
 	MOVLW       3
 	MOVWF       R0 
 	MOVLW       0
@@ -1195,8 +1266,8 @@ L_main47:
 	MOVF        _Unit+7, 0 
 	MOVWF       FARG_IDisplay_c+1 
 	CALL        _IDisplay+0, 0
-	GOTO        L_main35
-L_main48:
+	GOTO        L_main43
+L_main56:
 	MOVLW       3
 	MOVWF       R0 
 	MOVLW       0
@@ -1257,8 +1328,8 @@ L_main48:
 	MOVF        _Unit+7, 0 
 	MOVWF       FARG_IDisplay_c+1 
 	CALL        _IDisplay+0, 0
-	GOTO        L_main35
-L_main49:
+	GOTO        L_main43
+L_main57:
 	MOVLW       3
 	MOVWF       R0 
 	MOVLW       0
@@ -1307,8 +1378,8 @@ L_main49:
 	MOVF        _Unit+9, 0 
 	MOVWF       FARG_IDisplay_c+1 
 	CALL        _IDisplay+0, 0
-	GOTO        L_main35
-L_main50:
+	GOTO        L_main43
+L_main58:
 	MOVLW       3
 	MOVWF       R0 
 	MOVLW       0
@@ -1357,8 +1428,8 @@ L_main50:
 	MOVF        _Unit+9, 0 
 	MOVWF       FARG_IDisplay_c+1 
 	CALL        _IDisplay+0, 0
-	GOTO        L_main35
-L_main51:
+	GOTO        L_main43
+L_main59:
 	MOVLW       3
 	MOVWF       R0 
 	MOVLW       0
@@ -1414,8 +1485,8 @@ L_main51:
 	MOVF        _Unit+11, 0 
 	MOVWF       FARG_FDisplay_c+1 
 	CALL        _FDisplay+0, 0
-	GOTO        L_main35
-L_main52:
+	GOTO        L_main43
+L_main60:
 	MOVLW       3
 	MOVWF       R0 
 	MOVLW       0
@@ -1471,8 +1542,8 @@ L_main52:
 	MOVF        _Unit+11, 0 
 	MOVWF       FARG_FDisplay_c+1 
 	CALL        _FDisplay+0, 0
-	GOTO        L_main35
-L_main53:
+	GOTO        L_main43
+L_main61:
 	MOVLW       3
 	MOVWF       R0 
 	MOVLW       0
@@ -1528,8 +1599,8 @@ L_main53:
 	MOVF        _Unit+13, 0 
 	MOVWF       FARG_FDisplay_c+1 
 	CALL        _FDisplay+0, 0
-	GOTO        L_main35
-L_main54:
+	GOTO        L_main43
+L_main62:
 	MOVLW       _LCD_txt7+0
 	MOVWF       FARG_txttoram2_ctxt+0 
 	MOVLW       hi_addr(_LCD_txt7+0)
@@ -1561,8 +1632,8 @@ L_main54:
 	MOVF        FLOC__main+1, 0 
 	MOVWF       FARG_IDisplay_c+1 
 	CALL        _IDisplay+0, 0
-	GOTO        L_main35
-L_main55:
+	GOTO        L_main43
+L_main63:
 	MOVLW       _LCD_txt2+0
 	MOVWF       FARG_txttoram2_ctxt+0 
 	MOVLW       hi_addr(_LCD_txt2+0)
@@ -1597,12 +1668,12 @@ L_main55:
 	MOVLW       0
 	XORWF       _RunStepper+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__main190
+	GOTO        L__main204
 	MOVLW       1
 	XORWF       _RunStepper+0, 0 
-L__main190:
+L__main204:
 	BTFSS       STATUS+0, 2 
-	GOTO        L_main56
+	GOTO        L_main64
 	BCF         LATC+0, 0 
 	CLRF        _RunStepper+0 
 	CLRF        _RunStepper+1 
@@ -1611,9 +1682,9 @@ L__main190:
 	MOVLW       0
 	MOVWF       FARG_steppertest_NoOfPulses+1 
 	CALL        _steppertest+0, 0
-L_main56:
-	GOTO        L_main35
-L_main57:
+L_main64:
+	GOTO        L_main43
+L_main65:
 	MOVLW       _LCD_txt12+0
 	MOVWF       FARG_txttoram2_ctxt+0 
 	MOVLW       hi_addr(_LCD_txt12+0)
@@ -1645,8 +1716,8 @@ L_main57:
 	MOVF        FLOC__main+1, 0 
 	MOVWF       FARG_IDisplay_c+1 
 	CALL        _IDisplay+0, 0
-	GOTO        L_main35
-L_main58:
+	GOTO        L_main43
+L_main66:
 	MOVLW       _LCD_txt11+0
 	MOVWF       FARG_txttoram2_ctxt+0 
 	MOVLW       hi_addr(_LCD_txt11+0)
@@ -1691,13 +1762,13 @@ L_main58:
 	MOVWF       FARG_WindingProcess+0 
 	MOVF        R1, 0 
 	MOVWF       FARG_WindingProcess+1 
-	MOVF        _FParameter+88, 0 
+	MOVF        _FParameter+80, 0 
 	MOVWF       R0 
-	MOVF        _FParameter+89, 0 
+	MOVF        _FParameter+81, 0 
 	MOVWF       R1 
-	MOVF        _FParameter+90, 0 
+	MOVF        _FParameter+82, 0 
 	MOVWF       R2 
-	MOVF        _FParameter+91, 0 
+	MOVF        _FParameter+83, 0 
 	MOVWF       R3 
 	CALL        _double2int+0, 0
 	MOVF        R0, 0 
@@ -1713,8 +1784,8 @@ L_main58:
 	MOVF        _FParameter+75, 0 
 	MOVWF       FARG_WindingProcess+3 
 	CALL        _WindingProcess+0, 0
-	GOTO        L_main35
-L_main59:
+	GOTO        L_main43
+L_main67:
 	MOVLW       _LCD_txt5+0
 	MOVWF       FARG_txttoram2_ctxt+0 
 	MOVLW       hi_addr(_LCD_txt5+0)
@@ -1746,8 +1817,8 @@ L_main59:
 	MOVF        FLOC__main+1, 0 
 	MOVWF       FARG_IDisplay_c+1 
 	CALL        _IDisplay+0, 0
-	GOTO        L_main35
-L_main60:
+	GOTO        L_main43
+L_main68:
 	MOVLW       _LCD_txt9+0
 	MOVWF       FARG_txttoram2_ctxt+0 
 	MOVLW       hi_addr(_LCD_txt9+0)
@@ -1779,8 +1850,8 @@ L_main60:
 	MOVF        FLOC__main+1, 0 
 	MOVWF       FARG_IDisplay_c+1 
 	CALL        _IDisplay+0, 0
-	GOTO        L_main35
-L_main61:
+	GOTO        L_main43
+L_main69:
 	MOVLW       _LCD_txt2+0
 	MOVWF       FARG_txttoram2_ctxt+0 
 	MOVLW       hi_addr(_LCD_txt2+0)
@@ -1815,12 +1886,12 @@ L_main61:
 	MOVLW       0
 	XORWF       _RunStepper+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__main191
+	GOTO        L__main205
 	MOVLW       1
 	XORWF       _RunStepper+0, 0 
-L__main191:
+L__main205:
 	BTFSS       STATUS+0, 2 
-	GOTO        L_main62
+	GOTO        L_main70
 	BCF         LATC+0, 0 
 	CLRF        _RunStepper+0 
 	CLRF        _RunStepper+1 
@@ -1829,9 +1900,9 @@ L__main191:
 	MOVLW       0
 	MOVWF       FARG_steppertest_NoOfPulses+1 
 	CALL        _steppertest+0, 0
-L_main62:
-	GOTO        L_main35
-L_main63:
+L_main70:
+	GOTO        L_main43
+L_main71:
 	MOVLW       _LCD_txt12+0
 	MOVWF       FARG_txttoram2_ctxt+0 
 	MOVLW       hi_addr(_LCD_txt12+0)
@@ -1863,8 +1934,8 @@ L_main63:
 	MOVF        FLOC__main+1, 0 
 	MOVWF       FARG_IDisplay_c+1 
 	CALL        _IDisplay+0, 0
-	GOTO        L_main35
-L_main64:
+	GOTO        L_main43
+L_main72:
 	MOVLW       _LCD_txt11+0
 	MOVWF       FARG_txttoram2_ctxt+0 
 	MOVLW       hi_addr(_LCD_txt11+0)
@@ -1909,13 +1980,13 @@ L_main64:
 	MOVWF       FARG_WindingProcess+0 
 	MOVF        R1, 0 
 	MOVWF       FARG_WindingProcess+1 
-	MOVF        _FParameter+92, 0 
+	MOVF        _FParameter+84, 0 
 	MOVWF       R0 
-	MOVF        _FParameter+93, 0 
+	MOVF        _FParameter+85, 0 
 	MOVWF       R1 
-	MOVF        _FParameter+94, 0 
+	MOVF        _FParameter+86, 0 
 	MOVWF       R2 
-	MOVF        _FParameter+95, 0 
+	MOVF        _FParameter+87, 0 
 	MOVWF       R3 
 	CALL        _double2int+0, 0
 	MOVF        R0, 0 
@@ -1931,8 +2002,8 @@ L_main64:
 	MOVF        _FParameter+79, 0 
 	MOVWF       FARG_WindingProcess+3 
 	CALL        _WindingProcess+0, 0
-	GOTO        L_main35
-L_main65:
+	GOTO        L_main43
+L_main73:
 	MOVLW       _LCD_txt4+0
 	MOVWF       FARG_txttoram2_ctxt+0 
 	MOVLW       hi_addr(_LCD_txt4+0)
@@ -1964,262 +2035,262 @@ L_main65:
 	MOVF        FLOC__main+1, 0 
 	MOVWF       FARG_IDisplay_c+1 
 	CALL        _IDisplay+0, 0
-	GOTO        L_main35
-L_main34:
-	MOVLW       0
-	XORWF       _MenuNo+1, 0 
-	BTFSS       STATUS+0, 2 
-	GOTO        L__main192
-	MOVLW       0
-	XORWF       _MenuNo+0, 0 
-L__main192:
-	BTFSC       STATUS+0, 2 
-	GOTO        L_main36
-	MOVLW       0
-	XORWF       _MenuNo+1, 0 
-	BTFSS       STATUS+0, 2 
-	GOTO        L__main193
-	MOVLW       1
-	XORWF       _MenuNo+0, 0 
-L__main193:
-	BTFSC       STATUS+0, 2 
-	GOTO        L_main37
-	MOVLW       0
-	XORWF       _MenuNo+1, 0 
-	BTFSS       STATUS+0, 2 
-	GOTO        L__main194
-	MOVLW       2
-	XORWF       _MenuNo+0, 0 
-L__main194:
-	BTFSC       STATUS+0, 2 
-	GOTO        L_main38
-	MOVLW       0
-	XORWF       _MenuNo+1, 0 
-	BTFSS       STATUS+0, 2 
-	GOTO        L__main195
-	MOVLW       3
-	XORWF       _MenuNo+0, 0 
-L__main195:
-	BTFSC       STATUS+0, 2 
-	GOTO        L_main39
-	MOVLW       0
-	XORWF       _MenuNo+1, 0 
-	BTFSS       STATUS+0, 2 
-	GOTO        L__main196
-	MOVLW       4
-	XORWF       _MenuNo+0, 0 
-L__main196:
-	BTFSC       STATUS+0, 2 
-	GOTO        L_main40
-	MOVLW       0
-	XORWF       _MenuNo+1, 0 
-	BTFSS       STATUS+0, 2 
-	GOTO        L__main197
-	MOVLW       5
-	XORWF       _MenuNo+0, 0 
-L__main197:
-	BTFSC       STATUS+0, 2 
-	GOTO        L_main41
-	MOVLW       0
-	XORWF       _MenuNo+1, 0 
-	BTFSS       STATUS+0, 2 
-	GOTO        L__main198
-	MOVLW       6
-	XORWF       _MenuNo+0, 0 
-L__main198:
-	BTFSC       STATUS+0, 2 
-	GOTO        L_main42
-	MOVLW       0
-	XORWF       _MenuNo+1, 0 
-	BTFSS       STATUS+0, 2 
-	GOTO        L__main199
-	MOVLW       7
-	XORWF       _MenuNo+0, 0 
-L__main199:
-	BTFSC       STATUS+0, 2 
 	GOTO        L_main43
+L_main42:
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__main200
-	MOVLW       8
+	GOTO        L__main206
+	MOVLW       0
 	XORWF       _MenuNo+0, 0 
-L__main200:
+L__main206:
 	BTFSC       STATUS+0, 2 
 	GOTO        L_main44
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__main201
-	MOVLW       9
+	GOTO        L__main207
+	MOVLW       1
 	XORWF       _MenuNo+0, 0 
-L__main201:
+L__main207:
 	BTFSC       STATUS+0, 2 
 	GOTO        L_main45
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__main202
-	MOVLW       10
+	GOTO        L__main208
+	MOVLW       2
 	XORWF       _MenuNo+0, 0 
-L__main202:
+L__main208:
 	BTFSC       STATUS+0, 2 
 	GOTO        L_main46
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__main203
-	MOVLW       11
+	GOTO        L__main209
+	MOVLW       3
 	XORWF       _MenuNo+0, 0 
-L__main203:
+L__main209:
 	BTFSC       STATUS+0, 2 
 	GOTO        L_main47
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__main204
-	MOVLW       12
+	GOTO        L__main210
+	MOVLW       4
 	XORWF       _MenuNo+0, 0 
-L__main204:
+L__main210:
 	BTFSC       STATUS+0, 2 
 	GOTO        L_main48
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__main205
-	MOVLW       13
+	GOTO        L__main211
+	MOVLW       5
 	XORWF       _MenuNo+0, 0 
-L__main205:
+L__main211:
 	BTFSC       STATUS+0, 2 
 	GOTO        L_main49
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__main206
-	MOVLW       14
+	GOTO        L__main212
+	MOVLW       6
 	XORWF       _MenuNo+0, 0 
-L__main206:
+L__main212:
 	BTFSC       STATUS+0, 2 
 	GOTO        L_main50
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__main207
-	MOVLW       15
+	GOTO        L__main213
+	MOVLW       7
 	XORWF       _MenuNo+0, 0 
-L__main207:
+L__main213:
 	BTFSC       STATUS+0, 2 
 	GOTO        L_main51
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__main208
-	MOVLW       16
+	GOTO        L__main214
+	MOVLW       8
 	XORWF       _MenuNo+0, 0 
-L__main208:
+L__main214:
 	BTFSC       STATUS+0, 2 
 	GOTO        L_main52
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__main209
-	MOVLW       17
+	GOTO        L__main215
+	MOVLW       9
 	XORWF       _MenuNo+0, 0 
-L__main209:
+L__main215:
 	BTFSC       STATUS+0, 2 
 	GOTO        L_main53
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__main210
-	MOVLW       18
+	GOTO        L__main216
+	MOVLW       10
 	XORWF       _MenuNo+0, 0 
-L__main210:
+L__main216:
 	BTFSC       STATUS+0, 2 
 	GOTO        L_main54
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__main211
-	MOVLW       19
+	GOTO        L__main217
+	MOVLW       11
 	XORWF       _MenuNo+0, 0 
-L__main211:
+L__main217:
 	BTFSC       STATUS+0, 2 
 	GOTO        L_main55
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__main212
-	MOVLW       20
+	GOTO        L__main218
+	MOVLW       12
 	XORWF       _MenuNo+0, 0 
-L__main212:
+L__main218:
+	BTFSC       STATUS+0, 2 
+	GOTO        L_main56
+	MOVLW       0
+	XORWF       _MenuNo+1, 0 
+	BTFSS       STATUS+0, 2 
+	GOTO        L__main219
+	MOVLW       13
+	XORWF       _MenuNo+0, 0 
+L__main219:
 	BTFSC       STATUS+0, 2 
 	GOTO        L_main57
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__main213
-	MOVLW       21
+	GOTO        L__main220
+	MOVLW       14
 	XORWF       _MenuNo+0, 0 
-L__main213:
+L__main220:
 	BTFSC       STATUS+0, 2 
 	GOTO        L_main58
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__main214
-	MOVLW       22
+	GOTO        L__main221
+	MOVLW       15
 	XORWF       _MenuNo+0, 0 
-L__main214:
+L__main221:
 	BTFSC       STATUS+0, 2 
 	GOTO        L_main59
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__main215
-	MOVLW       23
+	GOTO        L__main222
+	MOVLW       16
 	XORWF       _MenuNo+0, 0 
-L__main215:
+L__main222:
 	BTFSC       STATUS+0, 2 
 	GOTO        L_main60
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__main216
-	MOVLW       24
+	GOTO        L__main223
+	MOVLW       17
 	XORWF       _MenuNo+0, 0 
-L__main216:
+L__main223:
 	BTFSC       STATUS+0, 2 
 	GOTO        L_main61
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__main217
-	MOVLW       25
+	GOTO        L__main224
+	MOVLW       18
 	XORWF       _MenuNo+0, 0 
-L__main217:
+L__main224:
+	BTFSC       STATUS+0, 2 
+	GOTO        L_main62
+	MOVLW       0
+	XORWF       _MenuNo+1, 0 
+	BTFSS       STATUS+0, 2 
+	GOTO        L__main225
+	MOVLW       19
+	XORWF       _MenuNo+0, 0 
+L__main225:
 	BTFSC       STATUS+0, 2 
 	GOTO        L_main63
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__main218
-	MOVLW       26
+	GOTO        L__main226
+	MOVLW       20
 	XORWF       _MenuNo+0, 0 
-L__main218:
+L__main226:
 	BTFSC       STATUS+0, 2 
-	GOTO        L_main64
+	GOTO        L_main65
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__main219
+	GOTO        L__main227
+	MOVLW       21
+	XORWF       _MenuNo+0, 0 
+L__main227:
+	BTFSC       STATUS+0, 2 
+	GOTO        L_main66
+	MOVLW       0
+	XORWF       _MenuNo+1, 0 
+	BTFSS       STATUS+0, 2 
+	GOTO        L__main228
+	MOVLW       22
+	XORWF       _MenuNo+0, 0 
+L__main228:
+	BTFSC       STATUS+0, 2 
+	GOTO        L_main67
+	MOVLW       0
+	XORWF       _MenuNo+1, 0 
+	BTFSS       STATUS+0, 2 
+	GOTO        L__main229
+	MOVLW       23
+	XORWF       _MenuNo+0, 0 
+L__main229:
+	BTFSC       STATUS+0, 2 
+	GOTO        L_main68
+	MOVLW       0
+	XORWF       _MenuNo+1, 0 
+	BTFSS       STATUS+0, 2 
+	GOTO        L__main230
+	MOVLW       24
+	XORWF       _MenuNo+0, 0 
+L__main230:
+	BTFSC       STATUS+0, 2 
+	GOTO        L_main69
+	MOVLW       0
+	XORWF       _MenuNo+1, 0 
+	BTFSS       STATUS+0, 2 
+	GOTO        L__main231
+	MOVLW       25
+	XORWF       _MenuNo+0, 0 
+L__main231:
+	BTFSC       STATUS+0, 2 
+	GOTO        L_main71
+	MOVLW       0
+	XORWF       _MenuNo+1, 0 
+	BTFSS       STATUS+0, 2 
+	GOTO        L__main232
+	MOVLW       26
+	XORWF       _MenuNo+0, 0 
+L__main232:
+	BTFSC       STATUS+0, 2 
+	GOTO        L_main72
+	MOVLW       0
+	XORWF       _MenuNo+1, 0 
+	BTFSS       STATUS+0, 2 
+	GOTO        L__main233
 	MOVLW       27
 	XORWF       _MenuNo+0, 0 
-L__main219:
+L__main233:
 	BTFSC       STATUS+0, 2 
-	GOTO        L_main65
-L_main35:
-	GOTO        L_main30
+	GOTO        L_main73
+L_main43:
+	GOTO        L_main37
 L_end_main:
 	GOTO        $+0
 ; end of _main
@@ -2231,17 +2302,17 @@ _interrupt:
 	MOVLW       0
 	MOVWF       _temp+1 
 	BTFSS       INTCON+0, 1 
-	GOTO        L_interrupt68
+	GOTO        L_interrupt76
 	MOVLW       0
 	XORWF       _EnableInputs+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt222
+	GOTO        L__interrupt236
 	MOVLW       1
 	XORWF       _EnableInputs+0, 0 
-L__interrupt222:
+L__interrupt236:
 	BTFSS       STATUS+0, 2 
-	GOTO        L_interrupt68
-L__interrupt178:
+	GOTO        L_interrupt76
+L__interrupt190:
 	MOVLW       PORTB+0
 	MOVWF       FARG_Button_port+0 
 	MOVLW       hi_addr(PORTB+0)
@@ -2254,88 +2325,88 @@ L__interrupt178:
 	CALL        _Button+0, 0
 	MOVF        R0, 1 
 	BTFSC       STATUS+0, 2 
-	GOTO        L_interrupt69
+	GOTO        L_interrupt77
 	MOVLW       1
 	SUBWF       _MenuNo+0, 1 
 	MOVLW       0
 	SUBWFB      _MenuNo+1, 1 
-	GOTO        L_interrupt70
-L_interrupt72:
+	GOTO        L_interrupt78
+L_interrupt80:
 	MOVLW       6
 	MOVWF       _MenuNo+0 
 	MOVLW       0
 	MOVWF       _MenuNo+1 
-	GOTO        L_interrupt71
-L_interrupt73:
+	GOTO        L_interrupt79
+L_interrupt81:
 	MOVLW       18
 	MOVWF       _MenuNo+0 
 	MOVLW       0
 	MOVWF       _MenuNo+1 
-	GOTO        L_interrupt71
-L_interrupt74:
+	GOTO        L_interrupt79
+L_interrupt82:
 	MOVLW       23
 	MOVWF       _MenuNo+0 
 	MOVLW       0
 	MOVWF       _MenuNo+1 
-	GOTO        L_interrupt71
-L_interrupt70:
+	GOTO        L_interrupt79
+L_interrupt78:
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt223
+	GOTO        L__interrupt237
 	MOVLW       7
 	XORWF       _MenuNo+0, 0 
-L__interrupt223:
+L__interrupt237:
 	BTFSC       STATUS+0, 2 
-	GOTO        L_interrupt72
+	GOTO        L_interrupt80
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt224
+	GOTO        L__interrupt238
 	MOVLW       21
 	XORWF       _MenuNo+0, 0 
-L__interrupt224:
+L__interrupt238:
 	BTFSC       STATUS+0, 2 
-	GOTO        L_interrupt73
+	GOTO        L_interrupt81
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt225
+	GOTO        L__interrupt239
 	MOVLW       26
 	XORWF       _MenuNo+0, 0 
-L__interrupt225:
+L__interrupt239:
 	BTFSC       STATUS+0, 2 
-	GOTO        L_interrupt74
-L_interrupt71:
+	GOTO        L_interrupt82
+L_interrupt79:
 	MOVLW       0
 	MOVWF       R0 
 	MOVF        _MenuNo+1, 0 
 	SUBWF       R0, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt226
+	GOTO        L__interrupt240
 	MOVF        _MenuNo+0, 0 
 	SUBLW       0
-L__interrupt226:
+L__interrupt240:
 	BTFSS       STATUS+0, 0 
-	GOTO        L_interrupt75
+	GOTO        L_interrupt83
 	CLRF        _MenuNo+0 
 	CLRF        _MenuNo+1 
-L_interrupt75:
-L_interrupt69:
-L_interrupt68:
+L_interrupt83:
+L_interrupt77:
+L_interrupt76:
 	BCF         INTCON+0, 1 
 	BTFSS       INTCON3+0, 0 
-	GOTO        L_interrupt78
+	GOTO        L_interrupt86
 	MOVLW       0
 	XORWF       _EnableInputs+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt227
+	GOTO        L__interrupt241
 	MOVLW       1
 	XORWF       _EnableInputs+0, 0 
-L__interrupt227:
+L__interrupt241:
 	BTFSS       STATUS+0, 2 
-	GOTO        L_interrupt78
-L__interrupt177:
+	GOTO        L_interrupt86
+L__interrupt189:
 	MOVLW       PORTB+0
 	MOVWF       FARG_Button_port+0 
 	MOVLW       hi_addr(PORTB+0)
@@ -2349,62 +2420,79 @@ L__interrupt177:
 	CALL        _Button+0, 0
 	MOVF        R0, 1 
 	BTFSC       STATUS+0, 2 
-	GOTO        L_interrupt79
+	GOTO        L_interrupt87
 	INFSNZ      _MenuNo+0, 1 
 	INCF        _MenuNo+1, 1 
-	MOVF        _MaxMenu+1, 0 
-	SUBWF       _MenuNo+1, 0 
-	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt228
-	MOVF        _MaxMenu+0, 0 
-	SUBWF       _MenuNo+0, 0 
-L__interrupt228:
-	BTFSS       STATUS+0, 0 
-	GOTO        L_interrupt80
-	CLRF        _MenuNo+0 
-	CLRF        _MenuNo+1 
-L_interrupt80:
 	MOVLW       0
 	SUBWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt229
+	GOTO        L__interrupt242
+	MOVLW       27
+	SUBWF       _MenuNo+0, 0 
+L__interrupt242:
+	BTFSS       STATUS+0, 0 
+	GOTO        L_interrupt88
+	CLRF        _MenuNo+0 
+	CLRF        _MenuNo+1 
+L_interrupt88:
+	MOVLW       0
+	SUBWF       _MenuNo+1, 0 
+	BTFSS       STATUS+0, 2 
+	GOTO        L__interrupt243
 	MOVLW       7
 	SUBWF       _MenuNo+0, 0 
-L__interrupt229:
+L__interrupt243:
 	BTFSS       STATUS+0, 0 
-	GOTO        L_interrupt83
+	GOTO        L_interrupt91
 	BTFSC       PORTC+0, 5 
-	GOTO        L_interrupt83
-L__interrupt176:
+	GOTO        L_interrupt91
+L__interrupt188:
+	MOVLW       18
+	MOVWF       _MenuNo+0 
+	MOVLW       0
+	MOVWF       _MenuNo+1 
+L_interrupt91:
+	MOVLW       0
+	XORWF       _MenuNo+1, 0 
+	BTFSS       STATUS+0, 2 
+	GOTO        L__interrupt244
+	MOVLW       18
+	XORWF       _MenuNo+0, 0 
+L__interrupt244:
+	BTFSS       STATUS+0, 2 
+	GOTO        L_interrupt94
+	BTFSC       PORTC+0, 5 
+	GOTO        L_interrupt94
+L__interrupt187:
 	MOVLW       23
 	MOVWF       _MenuNo+0 
 	MOVLW       0
 	MOVWF       _MenuNo+1 
-L_interrupt83:
-L_interrupt79:
-L_interrupt78:
+L_interrupt94:
+L_interrupt87:
+L_interrupt86:
 	BCF         INTCON3+0, 0 
 	BTFSS       INTCON3+0, 1 
-	GOTO        L_interrupt86
+	GOTO        L_interrupt97
 	MOVLW       0
 	XORWF       _CountingOn+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt230
+	GOTO        L__interrupt245
 	MOVLW       1
 	XORWF       _CountingOn+0, 0 
-L__interrupt230:
+L__interrupt245:
 	BTFSS       STATUS+0, 2 
-	GOTO        L_interrupt86
+	GOTO        L_interrupt97
 	MOVLW       0
 	XORWF       _EnableInputs+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt231
+	GOTO        L__interrupt246
 	MOVLW       0
 	XORWF       _EnableInputs+0, 0 
-L__interrupt231:
+L__interrupt246:
 	BTFSS       STATUS+0, 2 
-	GOTO        L_interrupt86
-L__interrupt175:
+	GOTO        L_interrupt97
+L__interrupt186:
 	MOVLW       PORTB+0
 	MOVWF       FARG_Button_port+0 
 	MOVLW       hi_addr(PORTB+0)
@@ -2418,58 +2506,58 @@ L__interrupt175:
 	CALL        _Button+0, 0
 	MOVF        R0, 1 
 	BTFSC       STATUS+0, 2 
-	GOTO        L_interrupt87
+	GOTO        L_interrupt98
 	INFSNZ      _TurnCount+0, 1 
 	INCF        _TurnCount+1, 1 
 	MOVLW       1
 	MOVWF       _RunStepper+0 
 	MOVLW       0
 	MOVWF       _RunStepper+1 
-L_interrupt87:
-L_interrupt86:
+L_interrupt98:
+L_interrupt97:
 	BCF         INTCON3+0, 1 
 	BTFSS       INTCON+0, 0 
-	GOTO        L__interrupt174
+	GOTO        L__interrupt185
 	MOVLW       0
 	XORWF       _EnableInputs+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt232
+	GOTO        L__interrupt247
 	MOVLW       1
 	XORWF       _EnableInputs+0, 0 
-L__interrupt232:
+L__interrupt247:
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt174
+	GOTO        L__interrupt185
 	MOVLW       0
 	SUBWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt233
+	GOTO        L__interrupt248
 	MOVLW       7
 	SUBWF       _MenuNo+0, 0 
-L__interrupt233:
+L__interrupt248:
 	BTFSC       STATUS+0, 0 
-	GOTO        L__interrupt174
-	GOTO        L__interrupt173
-L__interrupt174:
+	GOTO        L__interrupt185
+	GOTO        L__interrupt184
+L__interrupt185:
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt234
+	GOTO        L__interrupt249
 	MOVLW       19
 	XORWF       _MenuNo+0, 0 
-L__interrupt234:
+L__interrupt249:
 	BTFSC       STATUS+0, 2 
-	GOTO        L__interrupt173
+	GOTO        L__interrupt184
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt235
+	GOTO        L__interrupt250
 	MOVLW       24
 	XORWF       _MenuNo+0, 0 
-L__interrupt235:
+L__interrupt250:
 	BTFSC       STATUS+0, 2 
-	GOTO        L__interrupt173
-	GOTO        L_interrupt92
-L__interrupt173:
+	GOTO        L__interrupt184
+	GOTO        L_interrupt103
+L__interrupt184:
 	CLRF        R2 
 	BTFSC       PORTB+0, 5 
 	INCF        R2, 1 
@@ -2486,58 +2574,58 @@ L__interrupt173:
 	MOVF        interrupt_prevState_L1+0, 0 
 	XORLW       255
 	BTFSC       STATUS+0, 2 
-	GOTO        L_interrupt93
-	MOVF        interrupt_prevState_L1+0, 0 
-	XORLW       0
-	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt172
-	MOVF        _state+0, 0 
-	XORLW       1
-	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt172
-	GOTO        L__interrupt168
-L__interrupt172:
-	MOVF        interrupt_prevState_L1+0, 0 
-	XORLW       1
-	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt171
-	MOVF        _state+0, 0 
-	XORLW       3
-	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt171
-	GOTO        L__interrupt168
-L__interrupt171:
-	MOVF        interrupt_prevState_L1+0, 0 
-	XORLW       3
-	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt170
-	MOVF        _state+0, 0 
-	XORLW       2
-	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt170
-	GOTO        L__interrupt168
-L__interrupt170:
-	MOVF        interrupt_prevState_L1+0, 0 
-	XORLW       2
-	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt169
-	MOVF        _state+0, 0 
-	XORLW       0
-	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt169
-	GOTO        L__interrupt168
-L__interrupt169:
 	GOTO        L_interrupt104
-L__interrupt168:
+	MOVF        interrupt_prevState_L1+0, 0 
+	XORLW       0
+	BTFSS       STATUS+0, 2 
+	GOTO        L__interrupt183
+	MOVF        _state+0, 0 
+	XORLW       1
+	BTFSS       STATUS+0, 2 
+	GOTO        L__interrupt183
+	GOTO        L__interrupt179
+L__interrupt183:
+	MOVF        interrupt_prevState_L1+0, 0 
+	XORLW       1
+	BTFSS       STATUS+0, 2 
+	GOTO        L__interrupt182
+	MOVF        _state+0, 0 
+	XORLW       3
+	BTFSS       STATUS+0, 2 
+	GOTO        L__interrupt182
+	GOTO        L__interrupt179
+L__interrupt182:
+	MOVF        interrupt_prevState_L1+0, 0 
+	XORLW       3
+	BTFSS       STATUS+0, 2 
+	GOTO        L__interrupt181
+	MOVF        _state+0, 0 
+	XORLW       2
+	BTFSS       STATUS+0, 2 
+	GOTO        L__interrupt181
+	GOTO        L__interrupt179
+L__interrupt181:
+	MOVF        interrupt_prevState_L1+0, 0 
+	XORLW       2
+	BTFSS       STATUS+0, 2 
+	GOTO        L__interrupt180
+	MOVF        _state+0, 0 
+	XORLW       0
+	BTFSS       STATUS+0, 2 
+	GOTO        L__interrupt180
+	GOTO        L__interrupt179
+L__interrupt180:
+	GOTO        L_interrupt115
+L__interrupt179:
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt236
+	GOTO        L__interrupt251
 	MOVLW       2
 	XORWF       _MenuNo+0, 0 
-L__interrupt236:
+L__interrupt251:
 	BTFSS       STATUS+0, 2 
-	GOTO        L_interrupt105
+	GOTO        L_interrupt116
 	MOVF        _MenuNo+0, 0 
 	MOVWF       R0 
 	MOVF        _MenuNo+1, 0 
@@ -2597,27 +2685,27 @@ L__interrupt236:
 	MOVWF       POSTINC1+0 
 	MOVF        R3, 0 
 	MOVWF       POSTINC1+0 
-	GOTO        L_interrupt106
-L_interrupt105:
+	GOTO        L_interrupt117
+L_interrupt116:
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt237
+	GOTO        L__interrupt252
 	MOVLW       2
 	XORWF       _MenuNo+0, 0 
-L__interrupt237:
+L__interrupt252:
 	BTFSC       STATUS+0, 2 
-	GOTO        L_interrupt109
+	GOTO        L_interrupt120
 	MOVLW       0
 	SUBWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt238
+	GOTO        L__interrupt253
 	MOVLW       22
 	SUBWF       _MenuNo+0, 0 
-L__interrupt238:
+L__interrupt253:
 	BTFSC       STATUS+0, 0 
-	GOTO        L_interrupt109
-L__interrupt167:
+	GOTO        L_interrupt120
+L__interrupt178:
 	MOVF        _MenuNo+0, 0 
 	MOVWF       R0 
 	MOVF        _MenuNo+1, 0 
@@ -2654,70 +2742,70 @@ L__interrupt167:
 	MOVWF       POSTINC1+0 
 	MOVF        R1, 0 
 	MOVWF       POSTINC1+0 
-L_interrupt109:
-L_interrupt106:
+L_interrupt120:
+L_interrupt117:
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt239
+	GOTO        L__interrupt254
 	MOVLW       19
 	XORWF       _MenuNo+0, 0 
-L__interrupt239:
+L__interrupt254:
 	BTFSC       STATUS+0, 2 
-	GOTO        L__interrupt166
+	GOTO        L__interrupt177
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt240
+	GOTO        L__interrupt255
 	MOVLW       24
 	XORWF       _MenuNo+0, 0 
-L__interrupt240:
+L__interrupt255:
 	BTFSC       STATUS+0, 2 
-	GOTO        L__interrupt166
-	GOTO        L_interrupt112
-L__interrupt166:
+	GOTO        L__interrupt177
+	GOTO        L_interrupt123
+L__interrupt177:
 	BTFSS       PORTC+0, 2 
-	GOTO        L_interrupt113
+	GOTO        L_interrupt124
 	BCF         LATC+0, 2 
-L_interrupt113:
+L_interrupt124:
 	MOVLW       1
 	MOVWF       _RunStepper+0 
 	MOVLW       0
 	MOVWF       _RunStepper+1 
-L_interrupt112:
-	GOTO        L_interrupt114
-L_interrupt104:
+L_interrupt123:
+	GOTO        L_interrupt125
+L_interrupt115:
 	MOVF        interrupt_prevState_L1+0, 0 
 	XORLW       0
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt165
+	GOTO        L__interrupt176
 	MOVF        _state+0, 0 
 	XORLW       2
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt165
-	GOTO        L__interrupt163
-L__interrupt165:
+	GOTO        L__interrupt176
+	GOTO        L__interrupt174
+L__interrupt176:
 	MOVF        interrupt_prevState_L1+0, 0 
 	XORLW       1
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt164
+	GOTO        L__interrupt175
 	MOVF        _state+0, 0 
 	XORLW       0
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt164
-	GOTO        L__interrupt163
-L__interrupt164:
-	GOTO        L_interrupt121
-L__interrupt163:
+	GOTO        L__interrupt175
+	GOTO        L__interrupt174
+L__interrupt175:
+	GOTO        L_interrupt132
+L__interrupt174:
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt241
+	GOTO        L__interrupt256
 	MOVLW       2
 	XORWF       _MenuNo+0, 0 
-L__interrupt241:
+L__interrupt256:
 	BTFSS       STATUS+0, 2 
-	GOTO        L_interrupt122
+	GOTO        L_interrupt133
 	MOVF        _MenuNo+0, 0 
 	MOVWF       R0 
 	MOVF        _MenuNo+1, 0 
@@ -2812,7 +2900,7 @@ L__interrupt241:
 	MOVWF       R0 
 	MOVF        R0, 1 
 	BTFSC       STATUS+0, 2 
-	GOTO        L_interrupt123
+	GOTO        L_interrupt134
 	MOVF        _MenuNo+0, 0 
 	MOVWF       R0 
 	MOVF        _MenuNo+1, 0 
@@ -2833,9 +2921,9 @@ L__interrupt241:
 	CLRF        POSTINC1+0 
 	CLRF        POSTINC1+0 
 	CLRF        POSTINC1+0 
-L_interrupt123:
-	GOTO        L_interrupt124
-L_interrupt122:
+L_interrupt134:
+	GOTO        L_interrupt135
+L_interrupt133:
 	MOVF        _MenuNo+0, 0 
 	MOVWF       R0 
 	MOVF        _MenuNo+1, 0 
@@ -2872,7 +2960,7 @@ L_interrupt122:
 	MOVWF       POSTINC1+0 
 	MOVF        R1, 0 
 	MOVWF       POSTINC1+0 
-L_interrupt124:
+L_interrupt135:
 	MOVF        _MenuNo+0, 0 
 	MOVWF       R0 
 	MOVF        _MenuNo+1, 0 
@@ -2896,12 +2984,12 @@ L_interrupt124:
 	MOVLW       128
 	SUBWF       R0, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt242
+	GOTO        L__interrupt257
 	MOVLW       0
 	SUBWF       R1, 0 
-L__interrupt242:
+L__interrupt257:
 	BTFSC       STATUS+0, 0 
-	GOTO        L_interrupt125
+	GOTO        L_interrupt136
 	MOVF        _MenuNo+0, 0 
 	MOVWF       R0 
 	MOVF        _MenuNo+1, 0 
@@ -2917,47 +3005,45 @@ L__interrupt242:
 	MOVWF       FSR1H 
 	CLRF        POSTINC1+0 
 	CLRF        POSTINC1+0 
-L_interrupt125:
+L_interrupt136:
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt243
+	GOTO        L__interrupt258
 	MOVLW       19
 	XORWF       _MenuNo+0, 0 
-L__interrupt243:
+L__interrupt258:
 	BTFSC       STATUS+0, 2 
-	GOTO        L__interrupt162
+	GOTO        L__interrupt173
 	MOVLW       0
 	XORWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt244
+	GOTO        L__interrupt259
 	MOVLW       24
 	XORWF       _MenuNo+0, 0 
-L__interrupt244:
+L__interrupt259:
 	BTFSC       STATUS+0, 2 
-	GOTO        L__interrupt162
-	GOTO        L_interrupt128
-L__interrupt162:
+	GOTO        L__interrupt173
+	GOTO        L_interrupt139
+L__interrupt173:
 	BTFSC       PORTC+0, 2 
-	GOTO        L_interrupt129
+	GOTO        L_interrupt140
 	BSF         LATC+0, 2 
-L_interrupt129:
+L_interrupt140:
 	MOVLW       1
 	MOVWF       _RunStepper+0 
 	MOVLW       0
 	MOVWF       _RunStepper+1 
-L_interrupt128:
-L_interrupt121:
-L_interrupt114:
-L_interrupt93:
+L_interrupt139:
+L_interrupt132:
+L_interrupt125:
+L_interrupt104:
 	MOVF        _state+0, 0 
 	MOVWF       interrupt_prevState_L1+0 
-L_interrupt92:
-	MOVF        _temp+0, 0 
-	MOVWF       LATB+0 
+L_interrupt103:
 	BCF         INTCON+0, 0 
 L_end_interrupt:
-L__interrupt221:
+L__interrupt235:
 	RETFIE      1
 ; end of _interrupt
 
@@ -3006,13 +3092,13 @@ _Compute:
 	MOVWF       Compute_WindingLength_L0+2 
 	MOVF        R3, 0 
 	MOVWF       Compute_WindingLength_L0+3 
-	MOVLW       0
+	MOVLW       205
 	MOVWF       R4 
-	MOVLW       0
+	MOVLW       204
 	MOVWF       R5 
-	MOVLW       0
+	MOVLW       76
 	MOVWF       R6 
-	MOVLW       125
+	MOVLW       124
 	MOVWF       R7 
 	CALL        _Sub_32x32_FP+0, 0
 	MOVF        R0, 0 
@@ -3024,13 +3110,21 @@ _Compute:
 	MOVF        R3, 0 
 	MOVWF       Compute_WindingLength_L0+3 
 	MOVLW       0
-	MOVWF       Compute_microstep_L0+0 
+	MOVWF       Compute_microstep1_L0+0 
 	MOVLW       0
-	MOVWF       Compute_microstep_L0+1 
+	MOVWF       Compute_microstep1_L0+1 
 	MOVLW       27
-	MOVWF       Compute_microstep_L0+2 
+	MOVWF       Compute_microstep1_L0+2 
 	MOVLW       135
-	MOVWF       Compute_microstep_L0+3 
+	MOVWF       Compute_microstep1_L0+3 
+	MOVLW       0
+	MOVWF       Compute_microstep2_L0+0 
+	MOVLW       0
+	MOVWF       Compute_microstep2_L0+1 
+	MOVLW       17
+	MOVWF       Compute_microstep2_L0+2 
+	MOVLW       135
+	MOVWF       Compute_microstep2_L0+3 
 	MOVLW       1
 	MOVWF       FARG_Lcd_Cmd_out_char+0 
 	CALL        _Lcd_Cmd+0, 0
@@ -3110,13 +3204,13 @@ _Compute:
 	MOVWF       R12, 0
 	MOVLW       169
 	MOVWF       R13, 0
-L_Compute130:
+L_Compute141:
 	DECFSZ      R13, 1, 1
-	BRA         L_Compute130
+	BRA         L_Compute141
 	DECFSZ      R12, 1, 1
-	BRA         L_Compute130
+	BRA         L_Compute141
 	DECFSZ      R11, 1, 1
-	BRA         L_Compute130
+	BRA         L_Compute141
 	NOP
 	NOP
 	MOVF        Compute_Power_L0+0, 0 
@@ -3150,13 +3244,13 @@ L_Compute130:
 	MOVWF       R12, 0
 	MOVLW       169
 	MOVWF       R13, 0
-L_Compute131:
+L_Compute142:
 	DECFSZ      R13, 1, 1
-	BRA         L_Compute131
+	BRA         L_Compute142
 	DECFSZ      R12, 1, 1
-	BRA         L_Compute131
+	BRA         L_Compute142
 	DECFSZ      R11, 1, 1
-	BRA         L_Compute131
+	BRA         L_Compute142
 	NOP
 	NOP
 	MOVF        Compute_SectionKernel_L0+0, 0 
@@ -3303,20 +3397,20 @@ L_Compute131:
 	MOVWF       R12, 0
 	MOVLW       169
 	MOVWF       R13, 0
-L_Compute132:
+L_Compute143:
 	DECFSZ      R13, 1, 1
-	BRA         L_Compute132
+	BRA         L_Compute143
 	DECFSZ      R12, 1, 1
-	BRA         L_Compute132
+	BRA         L_Compute143
 	DECFSZ      R11, 1, 1
-	BRA         L_Compute132
+	BRA         L_Compute143
 	NOP
 	NOP
 	MOVLW       18
 	MOVWF       _i+0 
 	MOVLW       0
 	MOVWF       _i+1 
-L_Compute133:
+L_Compute144:
 	MOVLW       4
 	MOVWF       R2 
 	MOVF        _i+0, 0 
@@ -3324,14 +3418,14 @@ L_Compute133:
 	MOVF        _i+1, 0 
 	MOVWF       R1 
 	MOVF        R2, 0 
-L__Compute246:
-	BZ          L__Compute247
+L__Compute261:
+	BZ          L__Compute262
 	RLCF        R0, 1 
 	BCF         R0, 0 
 	RLCF        R1, 1 
 	ADDLW       255
-	GOTO        L__Compute246
-L__Compute247:
+	GOTO        L__Compute261
+L__Compute262:
 	MOVLW       _AWG+0
 	ADDWF       R0, 1 
 	MOVLW       hi_addr(_AWG+0)
@@ -3365,7 +3459,7 @@ L__Compute247:
 	MOVWF       R0 
 	MOVF        R0, 1 
 	BTFSC       STATUS+0, 2 
-	GOTO        L_Compute136
+	GOTO        L_Compute147
 	MOVLW       1
 	SUBWF       _i+0, 0 
 	MOVWF       R3 
@@ -3379,14 +3473,14 @@ L__Compute247:
 	MOVF        R4, 0 
 	MOVWF       R1 
 	MOVF        R2, 0 
-L__Compute248:
-	BZ          L__Compute249
+L__Compute263:
+	BZ          L__Compute264
 	RLCF        R0, 1 
 	BCF         R0, 0 
 	RLCF        R1, 1 
 	ADDLW       255
-	GOTO        L__Compute248
-L__Compute249:
+	GOTO        L__Compute263
+L__Compute264:
 	MOVLW       _AWG+0
 	ADDWF       R0, 0 
 	MOVWF       FLOC__Compute+0 
@@ -3422,13 +3516,13 @@ L__Compute249:
 	MOVWF       R2 
 	MOVF        POSTINC0+0, 0 
 	MOVWF       R3 
-	MOVF        Compute_microstep_L0+0, 0 
+	MOVF        Compute_microstep1_L0+0, 0 
 	MOVWF       R4 
-	MOVF        Compute_microstep_L0+1, 0 
+	MOVF        Compute_microstep1_L0+1, 0 
 	MOVWF       R5 
-	MOVF        Compute_microstep_L0+2, 0 
+	MOVF        Compute_microstep1_L0+2, 0 
 	MOVWF       R6 
-	MOVF        Compute_microstep_L0+3, 0 
+	MOVF        Compute_microstep1_L0+3, 0 
 	MOVWF       R7 
 	CALL        _Mul_32x32_FP+0, 0
 	MOVF        R0, 0 
@@ -3484,19 +3578,19 @@ L__Compute249:
 	MOVWF       Compute_diameter1_L0+2 
 	MOVF        POSTINC0+0, 0 
 	MOVWF       Compute_diameter1_L0+3 
-	GOTO        L_Compute134
-L_Compute136:
+	GOTO        L_Compute145
+L_Compute147:
 	MOVLW       1
 	SUBWF       _i+0, 1 
 	MOVLW       0
 	SUBWFB      _i+1, 1 
-	GOTO        L_Compute133
-L_Compute134:
+	GOTO        L_Compute144
+L_Compute145:
 	MOVLW       18
 	MOVWF       _i+0 
 	MOVLW       0
 	MOVWF       _i+1 
-L_Compute137:
+L_Compute148:
 	MOVLW       4
 	MOVWF       R2 
 	MOVF        _i+0, 0 
@@ -3504,14 +3598,14 @@ L_Compute137:
 	MOVF        _i+1, 0 
 	MOVWF       R1 
 	MOVF        R2, 0 
-L__Compute250:
-	BZ          L__Compute251
+L__Compute265:
+	BZ          L__Compute266
 	RLCF        R0, 1 
 	BCF         R0, 0 
 	RLCF        R1, 1 
 	ADDLW       255
-	GOTO        L__Compute250
-L__Compute251:
+	GOTO        L__Compute265
+L__Compute266:
 	MOVLW       _AWG+0
 	ADDWF       R0, 1 
 	MOVLW       hi_addr(_AWG+0)
@@ -3545,7 +3639,7 @@ L__Compute251:
 	MOVWF       R0 
 	MOVF        R0, 1 
 	BTFSC       STATUS+0, 2 
-	GOTO        L_Compute140
+	GOTO        L_Compute151
 	MOVLW       1
 	SUBWF       _i+0, 0 
 	MOVWF       R3 
@@ -3559,14 +3653,14 @@ L__Compute251:
 	MOVF        R4, 0 
 	MOVWF       R1 
 	MOVF        R2, 0 
-L__Compute252:
-	BZ          L__Compute253
+L__Compute267:
+	BZ          L__Compute268
 	RLCF        R0, 1 
 	BCF         R0, 0 
 	RLCF        R1, 1 
 	ADDLW       255
-	GOTO        L__Compute252
-L__Compute253:
+	GOTO        L__Compute267
+L__Compute268:
 	MOVLW       _AWG+0
 	ADDWF       R0, 0 
 	MOVWF       FLOC__Compute+0 
@@ -3602,13 +3696,13 @@ L__Compute253:
 	MOVWF       R2 
 	MOVF        POSTINC0+0, 0 
 	MOVWF       R3 
-	MOVF        Compute_microstep_L0+0, 0 
+	MOVF        Compute_microstep2_L0+0, 0 
 	MOVWF       R4 
-	MOVF        Compute_microstep_L0+1, 0 
+	MOVF        Compute_microstep2_L0+1, 0 
 	MOVWF       R5 
-	MOVF        Compute_microstep_L0+2, 0 
+	MOVF        Compute_microstep2_L0+2, 0 
 	MOVWF       R6 
-	MOVF        Compute_microstep_L0+3, 0 
+	MOVF        Compute_microstep2_L0+3, 0 
 	MOVWF       R7 
 	CALL        _Mul_32x32_FP+0, 0
 	MOVF        R0, 0 
@@ -3664,14 +3758,14 @@ L__Compute253:
 	MOVWF       Compute_diameter2_L0+2 
 	MOVF        POSTINC0+0, 0 
 	MOVWF       Compute_diameter2_L0+3 
-	GOTO        L_Compute138
-L_Compute140:
+	GOTO        L_Compute149
+L_Compute151:
 	MOVLW       1
 	SUBWF       _i+0, 1 
 	MOVLW       0
 	SUBWFB      _i+1, 1 
-	GOTO        L_Compute137
-L_Compute138:
+	GOTO        L_Compute148
+L_Compute149:
 	MOVLW       46
 	MOVWF       FARG_Lcd_Chr_CP_out_char+0 
 	CALL        _Lcd_Chr_CP+0, 0
@@ -3681,13 +3775,13 @@ L_Compute138:
 	MOVWF       R12, 0
 	MOVLW       169
 	MOVWF       R13, 0
-L_Compute141:
+L_Compute152:
 	DECFSZ      R13, 1, 1
-	BRA         L_Compute141
+	BRA         L_Compute152
 	DECFSZ      R12, 1, 1
-	BRA         L_Compute141
+	BRA         L_Compute152
 	DECFSZ      R11, 1, 1
-	BRA         L_Compute141
+	BRA         L_Compute152
 	NOP
 	NOP
 	MOVF        Compute_CoreWidth_L0+0, 0 
@@ -3717,13 +3811,13 @@ L_Compute141:
 	MOVWF       R12, 0
 	MOVLW       169
 	MOVWF       R13, 0
-L_Compute142:
+L_Compute153:
 	DECFSZ      R13, 1, 1
-	BRA         L_Compute142
+	BRA         L_Compute153
 	DECFSZ      R12, 1, 1
-	BRA         L_Compute142
+	BRA         L_Compute153
 	DECFSZ      R11, 1, 1
-	BRA         L_Compute142
+	BRA         L_Compute153
 	NOP
 	NOP
 	MOVLW       46
@@ -3735,13 +3829,13 @@ L_Compute142:
 	MOVWF       R12, 0
 	MOVLW       169
 	MOVWF       R13, 0
-L_Compute143:
+L_Compute154:
 	DECFSZ      R13, 1, 1
-	BRA         L_Compute143
+	BRA         L_Compute154
 	DECFSZ      R12, 1, 1
-	BRA         L_Compute143
+	BRA         L_Compute154
 	DECFSZ      R11, 1, 1
-	BRA         L_Compute143
+	BRA         L_Compute154
 	NOP
 	NOP
 	MOVF        Compute_WindingHeight_L0+0, 0 
@@ -3887,13 +3981,13 @@ L_Compute143:
 	MOVWF       R12, 0
 	MOVLW       169
 	MOVWF       R13, 0
-L_Compute144:
+L_Compute155:
 	DECFSZ      R13, 1, 1
-	BRA         L_Compute144
+	BRA         L_Compute155
 	DECFSZ      R12, 1, 1
-	BRA         L_Compute144
+	BRA         L_Compute155
 	DECFSZ      R11, 1, 1
-	BRA         L_Compute144
+	BRA         L_Compute155
 	NOP
 	NOP
 	MOVF        Compute_Power_L0+0, 0 
@@ -3977,37 +4071,37 @@ L_Compute144:
 	MOVF        Compute_TurnsPerLayer2_L0+3, 0 
 	MOVWF       _FParameter+79 
 	MOVF        Compute_Pulse1st_L0+0, 0 
-	MOVWF       _FParameter+88 
+	MOVWF       _FParameter+80 
 	MOVF        Compute_Pulse1st_L0+1, 0 
-	MOVWF       _FParameter+89 
+	MOVWF       _FParameter+81 
 	MOVF        Compute_Pulse1st_L0+2, 0 
-	MOVWF       _FParameter+90 
+	MOVWF       _FParameter+82 
 	MOVF        Compute_Pulse1st_L0+3, 0 
-	MOVWF       _FParameter+91 
+	MOVWF       _FParameter+83 
 	MOVF        Compute_Pulse2nd_L0+0, 0 
-	MOVWF       _FParameter+92 
+	MOVWF       _FParameter+84 
 	MOVF        Compute_Pulse2nd_L0+1, 0 
-	MOVWF       _FParameter+93 
+	MOVWF       _FParameter+85 
 	MOVF        Compute_Pulse2nd_L0+2, 0 
-	MOVWF       _FParameter+94 
+	MOVWF       _FParameter+86 
 	MOVF        Compute_Pulse2nd_L0+3, 0 
-	MOVWF       _FParameter+95 
+	MOVWF       _FParameter+87 
 	MOVLW       46
 	MOVWF       FARG_Lcd_Chr_CP_out_char+0 
 	CALL        _Lcd_Chr_CP+0, 0
-	MOVLW       6
+	MOVLW       3
 	MOVWF       R11, 0
-	MOVLW       19
+	MOVLW       138
 	MOVWF       R12, 0
-	MOVLW       173
+	MOVLW       85
 	MOVWF       R13, 0
-L_Compute145:
+L_Compute156:
 	DECFSZ      R13, 1, 1
-	BRA         L_Compute145
+	BRA         L_Compute156
 	DECFSZ      R12, 1, 1
-	BRA         L_Compute145
+	BRA         L_Compute156
 	DECFSZ      R11, 1, 1
-	BRA         L_Compute145
+	BRA         L_Compute156
 	NOP
 	NOP
 	MOVLW       1
@@ -4019,19 +4113,19 @@ L_Compute145:
 	MOVWF       _EnableInputs+0 
 	MOVLW       0
 	MOVWF       _EnableInputs+1 
-	MOVLW       6
+	MOVLW       3
 	MOVWF       R11, 0
-	MOVLW       19
+	MOVLW       138
 	MOVWF       R12, 0
-	MOVLW       173
+	MOVLW       85
 	MOVWF       R13, 0
-L_Compute146:
+L_Compute157:
 	DECFSZ      R13, 1, 1
-	BRA         L_Compute146
+	BRA         L_Compute157
 	DECFSZ      R12, 1, 1
-	BRA         L_Compute146
+	BRA         L_Compute157
 	DECFSZ      R11, 1, 1
-	BRA         L_Compute146
+	BRA         L_Compute157
 	NOP
 	NOP
 L_end_Compute:
@@ -4073,23 +4167,23 @@ _IDisplay:
 	MOVLW       0
 	SUBWF       _MenuNo+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__IDisplay255
+	GOTO        L__IDisplay270
 	MOVLW       18
 	SUBWF       _MenuNo+0, 0 
-L__IDisplay255:
+L__IDisplay270:
 	BTFSS       STATUS+0, 0 
-	GOTO        L_IDisplay147
+	GOTO        L_IDisplay158
 	MOVLW       1
 	MOVWF       _i+0 
 	MOVLW       0
 	MOVWF       _i+1 
-	GOTO        L_IDisplay148
-L_IDisplay147:
+	GOTO        L_IDisplay159
+L_IDisplay158:
 	MOVLW       10
 	MOVWF       _i+0 
 	MOVLW       0
 	MOVWF       _i+1 
-L_IDisplay148:
+L_IDisplay159:
 	MOVLW       2
 	MOVWF       FARG_Lcd_Out_row+0 
 	MOVF        _i+0, 0 
@@ -4105,13 +4199,13 @@ L_IDisplay148:
 	MOVWF       R12, 0
 	MOVLW       169
 	MOVWF       R13, 0
-L_IDisplay149:
+L_IDisplay160:
 	DECFSZ      R13, 1, 1
-	BRA         L_IDisplay149
+	BRA         L_IDisplay160
 	DECFSZ      R12, 1, 1
-	BRA         L_IDisplay149
+	BRA         L_IDisplay160
 	DECFSZ      R11, 1, 1
-	BRA         L_IDisplay149
+	BRA         L_IDisplay160
 	NOP
 	NOP
 L_end_IDisplay:
@@ -4125,12 +4219,12 @@ _FDisplay:
 	MOVF        _MenuNo+1, 0 
 	SUBWF       R0, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__FDisplay257
+	GOTO        L__FDisplay272
 	MOVF        _MenuNo+0, 0 
 	SUBLW       7
-L__FDisplay257:
+L__FDisplay272:
 	BTFSS       STATUS+0, 0 
-	GOTO        L_FDisplay150
+	GOTO        L_FDisplay161
 	MOVF        FARG_FDisplay_b+0, 0 
 	MOVWF       FARG_ftswd_f+0 
 	MOVF        FARG_FDisplay_b+1, 0 
@@ -4146,8 +4240,8 @@ L__FDisplay257:
 	MOVLW       1
 	MOVWF       FARG_ftswd_dec+0 
 	CALL        _ftswd+0, 0
-	GOTO        L_FDisplay151
-L_FDisplay150:
+	GOTO        L_FDisplay162
+L_FDisplay161:
 	MOVF        FARG_FDisplay_b+0, 0 
 	MOVWF       FARG_ftswd_f+0 
 	MOVF        FARG_FDisplay_b+1, 0 
@@ -4163,7 +4257,7 @@ L_FDisplay150:
 	MOVLW       4
 	MOVWF       FARG_ftswd_dec+0 
 	CALL        _ftswd+0, 0
-L_FDisplay151:
+L_FDisplay162:
 	MOVLW       1
 	MOVWF       FARG_Lcd_Cmd_out_char+0 
 	CALL        _Lcd_Cmd+0, 0
@@ -4200,13 +4294,13 @@ L_FDisplay151:
 	MOVWF       R12, 0
 	MOVLW       169
 	MOVWF       R13, 0
-L_FDisplay152:
+L_FDisplay163:
 	DECFSZ      R13, 1, 1
-	BRA         L_FDisplay152
+	BRA         L_FDisplay163
 	DECFSZ      R12, 1, 1
-	BRA         L_FDisplay152
+	BRA         L_FDisplay163
 	DECFSZ      R11, 1, 1
-	BRA         L_FDisplay152
+	BRA         L_FDisplay163
 	NOP
 	NOP
 L_end_FDisplay:
@@ -4238,22 +4332,22 @@ _WindingProcess:
 	MOVWF       R12, 0
 	MOVLW       85
 	MOVWF       R13, 0
-L_WindingProcess153:
+L_WindingProcess164:
 	DECFSZ      R13, 1, 1
-	BRA         L_WindingProcess153
+	BRA         L_WindingProcess164
 	DECFSZ      R12, 1, 1
-	BRA         L_WindingProcess153
+	BRA         L_WindingProcess164
 	BSF         LATC+0, 7 
-L_WindingProcess154:
+L_WindingProcess165:
 	MOVLW       0
 	XORWF       _RunStepper+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__WindingProcess259
+	GOTO        L__WindingProcess274
 	MOVLW       1
 	XORWF       _RunStepper+0, 0 
-L__WindingProcess259:
+L__WindingProcess274:
 	BTFSS       STATUS+0, 2 
-	GOTO        L_WindingProcess157
+	GOTO        L_WindingProcess168
 	CLRF        _RunStepper+0 
 	CLRF        _RunStepper+1 
 	MOVF        FARG_WindingProcess_PulsesPerTurn+0, 0 
@@ -4279,7 +4373,7 @@ L__WindingProcess259:
 	MOVLW       hi_addr(_itext+0)
 	MOVWF       FARG_Lcd_Out_text+1 
 	CALL        _Lcd_Out+0, 0
-L_WindingProcess157:
+L_WindingProcess168:
 	MOVF        _TurnCount+0, 0 
 	MOVWF       R0 
 	MOVF        _TurnCount+1, 0 
@@ -4300,7 +4394,7 @@ L_WindingProcess157:
 	MOVWF       R0 
 	MOVF        R0, 1 
 	BTFSC       STATUS+0, 2 
-	GOTO        L_WindingProcess158
+	GOTO        L_WindingProcess169
 	MOVF        WindingProcess_nLayers_L0+0, 0 
 	MOVWF       R0 
 	MOVF        WindingProcess_nLayers_L0+1, 0 
@@ -4327,26 +4421,26 @@ L_WindingProcess157:
 	MOVF        R3, 0 
 	MOVWF       WindingProcess_nLayers_L0+3 
 	BTG         PORTC+0, 2 
-L_WindingProcess158:
+L_WindingProcess169:
 	MOVF        FARG_WindingProcess_xturns+1, 0 
 	SUBWF       _TurnCount+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__WindingProcess260
+	GOTO        L__WindingProcess275
 	MOVF        FARG_WindingProcess_xturns+0, 0 
 	SUBWF       _TurnCount+0, 0 
-L__WindingProcess260:
+L__WindingProcess275:
 	BTFSS       STATUS+0, 0 
-	GOTO        L_WindingProcess154
+	GOTO        L_WindingProcess165
 	BCF         LATC+0, 7 
 	MOVLW       163
 	MOVWF       R12, 0
 	MOVLW       85
 	MOVWF       R13, 0
-L_WindingProcess159:
+L_WindingProcess170:
 	DECFSZ      R13, 1, 1
-	BRA         L_WindingProcess159
+	BRA         L_WindingProcess170
 	DECFSZ      R12, 1, 1
-	BRA         L_WindingProcess159
+	BRA         L_WindingProcess170
 	BCF         LATC+0, 6 
 	CLRF        _CountingOn+0 
 	CLRF        _CountingOn+1 
@@ -4363,13 +4457,13 @@ L_WindingProcess159:
 	MOVWF       R12, 0
 	MOVLW       85
 	MOVWF       R13, 0
-L_WindingProcess160:
+L_WindingProcess171:
 	DECFSZ      R13, 1, 1
-	BRA         L_WindingProcess160
+	BRA         L_WindingProcess171
 	DECFSZ      R12, 1, 1
-	BRA         L_WindingProcess160
+	BRA         L_WindingProcess171
 	DECFSZ      R11, 1, 1
-	BRA         L_WindingProcess160
+	BRA         L_WindingProcess171
 	NOP
 	NOP
 L_end_WindingProcess:

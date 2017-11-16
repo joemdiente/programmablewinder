@@ -1048,7 +1048,6 @@ rbif
 rbif_bit
 rbip
 rbip_bit
-rbportchange
 rbpu
 rbpu_bit
 rc0
@@ -1386,7 +1385,6 @@ tblptrh
 tblptrl
 tblptru
 temp
-test
 time_datetoepoch
 time_epochtodate
 time_jd1970

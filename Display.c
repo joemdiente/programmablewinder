@@ -1,6 +1,11 @@
-// LCD module connections
+/////////////////////////////////////////////////
+//PROGRAMMABLE TRANSFORMER COIL WINDING MACHINE//
+//         BY: DIENTE,JOEMEL JOHN A.           //
+//         ZOLETA, MARIO P. JR.                //
+//                                             //
+/////////////////////////////////////////////////
+///////////////LCD module connections////////////
 #define USE_LAT
-
 #ifdef USE_LAT
   #define ASSIGN_PIN(name,b) \
   sbit name               at LAT ## b ## _bit; \
@@ -16,68 +21,52 @@ ASSIGN_PIN(LCD_D4, A2)
 ASSIGN_PIN(LCD_D5, A3)
 ASSIGN_PIN(LCD_D6, A4)
 ASSIGN_PIN(LCD_D7, A5)
-// End LCD module connections
-
-
-//PARAMETERS
+/////////////End LCD module connections///////////
+////////////////////PARAMETERS////////////////////
 const char *ParameterName[18] = {
-                       "Voltage In",
-                       "Voltage Out",
-                       "Current Out",
-                       "Core Width",
-                       "Core Height",
-                       "Winding Height",
-                       "Winding Length",
-                       "",                         //Placeholder for "Computing Screen"
-                       "Power(VA)",
-                       "Current In",
-                       "Perimeter",
-                       "NoOfTurns(1st)",
-                       "NoOfTurns(2nd)",
-                       "WireSize(1st)",
-                       "WireSize(2nd)",
-                       "WeightWire1",
-                       "WeightWire2",
-                       "Air Gap"
-                       };
-
+   "Voltage In",
+   "Voltage Out",
+   "Current Out",
+   "Core Width",
+   "Core Height",
+   "Winding Height",
+   "Winding Length",
+   "",    //Placeholder for "Computing Screen"
+   "Power(VA)",
+   "Current In",
+   "Perimeter",
+   "NoOfTurns(1st)",
+   "NoOfTurns(2nd)",
+   "WireSize(1st)",
+   "WireSize(2nd)",
+   "WeightWire1",
+   "WeightWire2",
+   "Air Gap" 
+   };
 char *Unit[9] = {
-                       "volts",
-                       "amps",
-                       "mm.",
-                       "times",
-                       "AWG",
-                       "kg.",
-                       "sq.mm.",
-                       "VA",
-                       "",
-                 };
+   "volts",
+   "amps",
+   "mm.",
+   "times",
+   "AWG",
+   "kg.",
+   "sq.mm.",
+   "VA",
+   ""
+   };
 float FParameter[20] = {
-                       0,0,3.0,0,0,
-                       0,0,0,0,0,
-                       0,0,0,0,0,
-                       0,0,0,0,0
-                       };
+   0,0,3.0,0,0,
+   0,0,0,0,0,
+   0,0,0,0,0,
+   0,0,0,0,0
+   };
 int IParameter[20] = {
-                      220,6,0,29,29,
-                      11,36,0,0,0,
-                      0,0,0,0,0,
-                      0,0,0,0,0
-                      };
-const char LCD_txt1[] = "Adjust Knob";
-const char LCD_txt2[] = "For Start Point";
-const char LCD_txt3[] = "WindingFinished!";
-const char LCD_txt4[] = "PressOkToReturn";
-const char LCD_txt5[] = "PressOktoProceed";
-const char LCD_txt6[] = "Start Winding?";
-const char LCD_txt7[] = "Insert 1st Wire";
-const char LCD_txt8[] = "First Winding: ";
-const char LCD_txt9[] = "Insert 2nd Wire";
-const char LCD_txt10[] = "Second Winding: ";
-const char LCD_txt11[] = "Turn No:  ";
-const char LCD_txt12[] = "                ";
-//// {AWG NO.,DIAMETER,KG/M,CURRENT CAPACITY,StepperCalibrated Delay}
-float AWG[19][4] = {
+   220,6,0,29,29,
+   11,36,0,0,0,
+   0,0,0,0,0,
+   0,0,0,0,0
+   };
+float AWG[19][4] = {       ////{AWG NO.,DIAMETER,KG/M,CURRENT CAPACITY}/////
 {16,1.63,0.0185,5.46},
 {17,1.42,0.0142,4.18},
 {18,1.22,0.0104,3.07},
@@ -98,10 +87,21 @@ float AWG[19][4] = {
 {33,0.254,0.000452,0.133},
 {34,0.234,0.000383,0.113}
 };
-
-
-// FUNCTIONS
-
+////////////////LCD TEXTS SAVED IN RAM/////////////
+const char LCD_txt1[] = "Adjust Knob";
+const char LCD_txt2[] = "For Start Point";
+const char LCD_txt3[] = "WindingFinished!";
+const char LCD_txt4[] = "PressOkToReturn";
+const char LCD_txt5[] = "PressOktoProceed";
+const char LCD_txt6[] = "Start Winding?";
+const char LCD_txt7[] = "Insert 1st Wire";
+const char LCD_txt8[] = "First Winding: ";
+const char LCD_txt9[] = "Insert 2nd Wire";
+const char LCD_txt10[] = "Second Winding: ";
+const char LCD_txt11[] = "Turn No:  ";
+const char LCD_txt12[] = "                ";
+////////////////LCD TEXTS SAVED IN RAM/////////////
+///////////////////// FUNCTIONS ///////////////////
 void IDisplay(char *a, int b,char *c);
 void FDisplay(char *a, float b,char *c);
 void interrupt();
@@ -109,45 +109,38 @@ void Compute();
 void WindingProcess(int,int,float);
 ////////////////////////////////////START OF GLOBAL VARIABLES////////////////////////////////////
 volatile unsigned int MenuNo,TurnCount,RunStepper;
-int MaxMenu,
-    EnableInputs,
+int EnableInputs,
     CountingOn,
     Pulse,
-    test,
-    RBPORTCHANGE,
     i,x,
     temp;
+const int MaxMenu = 27;
 char itext[7],          //for IntToStr
      ftext[15];         //for FloatToStr
-unsigned char state;                   //For Rotary Encoder
+unsigned char state;    //For Rotary Encoder
 ////////////////////////////////////END OF GLOBAL VARIABLES////////////////////////////////////
-
-//Workaround for RAM Consumption
+//////Workaround for RAM Consumption//////
 char* txttoram(const char* ctxt){
   static char txt[20];
   char i;
   for(i =0; txt[i] = ctxt[i]; i++);
-
   return txt;
 }
 char* txttoram2(const char* ctxt){
   static char txt[20];
   char i;
   for(i =0; txt[i] = ctxt[i]; i++);
-
   return txt;
 }
+////////////////////////////////////////////
 /////////////////////FloatToStringWithDecimalLimiter///////////////
 void ftswd(float f, char * txt, char dec) {
    unsigned long n;
    short i = 0, j, tmp = 0, len = dec;
    unsigned long p[10] = {1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000};
-
    n = f * p[dec];
-
    if (n < p[dec])
       tmp = 1;
-
    do {
       if (i == dec) {
          txt[i++] = '.';
@@ -156,12 +149,9 @@ void ftswd(float f, char * txt, char dec) {
       txt[i++] = n % 10 + '0';
       n /= 10;
    } while((len-- > 0) || n);
-
    if (tmp)
       txt[i++] = '0';
-
    txt[i] = '\0';
-
    for (j = i - 1, i = 0; i < j; i++, j--)
        tmp = txt[i], txt[i] = txt[j], txt[j] = tmp;
 }
@@ -177,12 +167,11 @@ void steppertest(int NoOfPulses){
 void stepper(int NoOfPulses){
  for(pulse = 0; pulse <= NoOfPulses; pulse++){
   latc.f1 = 1;
-  delay_us(100);
+  delay_us(80);
   latc.f1 = 0;
-  delay_us(100);
+  delay_us(80);
  }
 }
-
 ////////////////////////////////////START OF MAIN PROGRAM////////////////////////////////////
 void main() {
 TRISA = 0b000000;
@@ -213,37 +202,39 @@ delay_ms(100);
 //USBCON
 UCON.USBEN = 0;
 UCFG.UTRDIS = 1;
-/////////////////////////
 //STEPPER INIT
-portc.f0 = 0; //ENABLE if 0 = on; 1 = off
+latc.f0 = 0; //ENABLE if 0 = on; 1 = off
 RunStepper = 0;
 //TRIAC INIT
-portc.f7 = 0;
-portc.f6 = 0;
-/////////////////////////
-  //Starting Message//
+latc.f7 = 0;
+latc.f6 = 0;
+////////Starting Message///////
+Lcd_Cmd(_LCD_CURSOR_OFF);
 Lcd_Cmd(_Lcd_Clear);
-LCD_Out(1,3,"Transformer");
-LCD_Out(2,4,"Coil Winder");
-delay_ms(500);
-Lcd_Cmd(_Lcd_Clear);
-LCD_Out(1,2,"Enter");
-LCD_Out(2,2,"Specifications");
-delay_ms(500);
-  //Starting Message//
-////////////////////////
-
-//INITIALIZE VALUES//
+LCD_Out(1,16,"Transformer Coil");
+LCD_Out(2,17," Winding Machine");
+delay_ms(200);
+for(i=0; i<32; i++) {
+    Lcd_Cmd(_LCD_SHIFT_LEFT);
+    delay_ms(150);
+  }
+LCD_Cmd(_LCD_CLEAR);
+for(i=0; i<4; i++) {
+    LCD_Out(1,2,"Enter");
+    LCD_Out(2,2,"Specifications");
+    delay_ms(250);
+    LCD_Cmd(_LCD_CLEAR);
+    delay_ms(250);
+  }
+////////Starting Message///////
+//INITIALIZE VALUES
 CountingOn = 0;
-MaxMenu = 30;
 MenuNo = 0;
-delay_ms(500);
-
  //Start of Loop//
  for(;;) {
+   delay_ms(200);
    EnableInputs = 1;
    if(MenuNo > MaxMenu) MenuNo = 0;
-    Lcd_Cmd(_LCD_CURSOR_OFF);
     switch (MenuNo) {
       case 0:
            IDisplay(txttoram(ParameterName[MenuNo]),IParameter[MenuNo],Unit[0]);  //Voltage In
@@ -315,7 +306,7 @@ delay_ms(500);
            break;
       case 21:///////////////////////START OF FIRST WINDING PROCESS //////////////////////////////////
            IDisplay(txttoram(LCD_txt8),IParameter[7],txttoram2(LCD_txt11));  /// First winding, turn no:
-           WindingProcess(FParameter[11],FParameter[22],FParameter[18]);
+           WindingProcess(FParameter[11],FParameter[20],FParameter[18]);
            break;
       case 22:
            IDisplay(txttoram(LCD_txt3),IParameter[7],txttoram2(LCD_txt5));    ///winding finished! press to proceed
@@ -337,7 +328,7 @@ delay_ms(500);
            break;
       case 26:///////////////////////START OF second WINDING PROCESS //////////////////////////////////
            IDisplay(txttoram(LCD_txt10),IParameter[7],txttoram2(LCD_txt11));  //2nd Winding Insert 2nd Wire
-           WindingProcess(FParameter[12],FParameter[23],FParameter[19]);
+           WindingProcess(FParameter[12],FParameter[21],FParameter[19]);
            break;
       case 27:
            IDisplay(txttoram(LCD_txt3),IParameter[7],txttoram2(LCD_txt4));
@@ -349,7 +340,7 @@ delay_ms(500);
 ////////////////////////////////END OF MAIN PROGRAM////////////////////////////////////
 //////////////////////////////////INTERRUPT FUNCTION ///////////////////////////////////
 void interrupt() {
-  temp = portb;
+  temp = portb; //prevent mismatch condition
 //  INT0 --- BACK MENU
   if (INTCON.INT0IF == 1 && EnableInputs == 1){
    if (Button(&PORTB,0,150,1)) {
@@ -369,7 +360,8 @@ void interrupt() {
    if (Button(&PORTB,1,150,1)) {
     MenuNo = MenuNo + 1;
     if (MenuNo >= MaxMenu) MenuNo = 0;
-    if (MenuNo >= 7 && portc.f5 == 0) MenuNo = 23;
+    if (MenuNo >= 7 && portc.f5 == 0) MenuNo = 18;
+    if (MenuNo == 18 && portc.f5 == 0) MenuNo = 23;
     }
   }
   INTCON3.INT1IF = 0;
@@ -423,7 +415,6 @@ void interrupt() {
     }
     prevState = state; //Save previous port b state.
    }
-     latb = temp;    // Prevent Mismatch Condition
      INTCON.RBIF = 0;
   ////////////////////////////////////////////////////////////////
   //End of ISR
@@ -431,7 +422,7 @@ void interrupt() {
 void Compute() {
     float UsedArea,Weight1,Weight2,I1,I2,SectionKernel,TurnsPerLayer1,TurnsPerLayer2;
     float WeightWire1,WeightWire2,AvailableArea,diameter1,diameter2;
-    float Pulse1st,Pulse2nd,NoOfTurns1,NoOfTurns2,WindingLength,microstep;
+    float Pulse1st,Pulse2nd,NoOfTurns1,NoOfTurns2,WindingLength,microstep1,microstep2;
     int PrimaryGauge,SecondaryGauge,Perimeter,CoreWidth,CoreLength,WindingHeight;
     int V1,V2,Power;
     EnableInputs = 0;
@@ -445,8 +436,9 @@ void Compute() {
  CoreLength = IParameter[4];
  WindingHeight = IParameter[5];
  WindingLength = (float)IParameter[6];
- WindingLength = WindingLength - 0.25f; //allowance to prevent wire going out of bounds
- Microstep = 310.0f;
+ WindingLength = WindingLength - 0.20f; //allowance to prevent wire going out of bounds
+ Microstep1 = 310.0f;
+ Microstep2 = 290.0f;
      Lcd_Cmd(_Lcd_Clear);
      Lcd_Out(1,1,"Computing");
 
@@ -471,19 +463,19 @@ void Compute() {
 
    //Gauge & Stepper Calculations & Turns Per Layer
    //scans the multidimensional array.column 3 is max current;column 0 is AWG no.;column 1 is diameter ; column 4 is delay stpr
-   for(i=18;;i--) {
+   for(i=18; ;i--) {
        if(I1 < AWG[i][3]) {
         PrimaryGauge = AWG[i-1][0] ;   // -1 to ensure high current capacity
-        Pulse1st = AWG[i-1][1]*(microstep);    //Pulse per Turn
-        TurnsPerLayer1 = (float)WindingLength/AWG[i - 1][1];  //Turns Per Layer
-        diameter1 = AWG[i - 1][1];
+        Pulse1st = AWG[i-1][1]*(microstep1);    //Pulse per Turn
+        TurnsPerLayer1 = (float)WindingLength/AWG[i-1][1];  //Turns Per Layer
+        diameter1 = AWG[i-1][1];
         break;
        }
      }
-   for(i=18;;i--) {
+   for(i=18; ;i--) {
        if(I2 < AWG[i][3]) {
         SecondaryGauge = AWG[i-1][0];  // -1 to ensure high current capacity
-        Pulse2nd = AWG[i-1][1]*(microstep);
+        Pulse2nd = AWG[i-1][1]*(microstep2);
         TurnsPerLayer2 = (float)WindingLength/AWG[i-1][1];  //Turns Per Layer
         diameter2 = AWG[i-1][1];
         break;
@@ -496,6 +488,7 @@ void Compute() {
      Perimeter = (2*CoreWidth) + (2*CoreLength);
      Lcd_Chr_Cp('.');
      delay_ms(100);
+     
    //Weight of Wire
    /////////////////////////////////////
    /////////////////////////////////////
@@ -508,7 +501,7 @@ void Compute() {
      Lcd_Chr_Cp('.');
      delay_ms(100);
 
-
+ //SAVE TO MATRIX
  IParameter[8] = Power;
  FParameter[9] = I1;
  IParameter[10] = Perimeter;
@@ -521,16 +514,14 @@ void Compute() {
  FParameter[17] = AvailableArea;
  FParameter[18] = TurnsPerLayer1;
  FParameter[19] = TurnsPerLayer2;
- FParameter[22] = Pulse1st;
- FParameter[23] = Pulse2nd;
+ FParameter[20] = Pulse1st;
+ FParameter[21] = Pulse2nd;
      Lcd_Chr_Cp('.');
-     delay_ms(400);
-
+     delay_ms(200);
      Lcd_Cmd(_Lcd_Clear);
      MenuNo = MenuNo + 1;
      EnableInputs = 1;
-
-     delay_ms(400);
+     delay_ms(200);
 }
 ////////////////////////////////////START OF DISPLAY FUNCTIONS////////////////////////////////////
 void IDisplay(char *a,int b,char *c) {
@@ -564,12 +555,11 @@ TurnCount = 0;
 nLayers = TurnsPerLayer;
 latc.f0 = 0;     //turn on stepper
 latc.f2 = 0;     //right
-
-latc.f6 = 1;                    /////// TURN ON BREAK
-delay_ms(50);                   //delay to stop stalling of motor
-latc.f7 = 1;                   /////// TURN ON MOTOR
- do {
-
+latc.f6 = 1;     /////// TURN ON BREAK
+delay_ms(50);    //delay to stop stalling of motor
+latc.f7 = 1;    /////// TURN ON MOTOR
+        
+        do {
          if(Runstepper == 1) {
          RunStepper = 0;
          Stepper(PulsesPerTurn);
@@ -580,14 +570,12 @@ latc.f7 = 1;                   /////// TURN ON MOTOR
          nlayers = nlayers + TurnsPerLayer;
          portc.f2 = ~portc.f2;
          }
-
- }
- while (TurnCount < xturns);
+        }
+        while (TurnCount < xturns);
 
 latc.f7 = 0;                   /////// TURN OFF MOTOR
 delay_ms(50);                   //delay to stop stalling of motor
 latc.f6 = 0;                    /////// TURN OFF BREAK
-
 //OUTRO
 CountingOn = 0;
 EnableInputs = 1;

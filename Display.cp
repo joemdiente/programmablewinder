@@ -1,13 +1,11 @@
 #line 1 "C:/Users/Joem Diente/Google Drive/Thesis Backup/Program/Display.c"
-#line 13 "C:/Users/Joem Diente/Google Drive/Thesis Backup/Program/Display.c"
+#line 18 "C:/Users/Joem Diente/Google Drive/Thesis Backup/Program/Display.c"
  sbit LCD_RS at LATA0_bit ; sbit LCD_RS_Direction  at TRISA0_bit ; 
  sbit LCD_EN at LATA1_bit ; sbit LCD_EN_Direction  at TRISA1_bit ; 
  sbit LCD_D4 at LATA2_bit ; sbit LCD_D4_Direction  at TRISA2_bit ; 
  sbit LCD_D5 at LATA3_bit ; sbit LCD_D5_Direction  at TRISA3_bit ; 
  sbit LCD_D6 at LATA4_bit ; sbit LCD_D6_Direction  at TRISA4_bit ; 
  sbit LCD_D7 at LATA5_bit ; sbit LCD_D7_Direction  at TRISA5_bit ; 
-
-
 
 
 const char *ParameterName[18] = {
@@ -30,7 +28,6 @@ const char *ParameterName[18] = {
  "WeightWire2",
  "Air Gap"
  };
-
 char *Unit[9] = {
  "volts",
  "amps",
@@ -40,7 +37,7 @@ char *Unit[9] = {
  "kg.",
  "sq.mm.",
  "VA",
- "",
+ ""
  };
 float FParameter[20] = {
  0,0,3.0,0,0,
@@ -54,19 +51,6 @@ int IParameter[20] = {
  0,0,0,0,0,
  0,0,0,0,0
  };
-const char LCD_txt1[] = "Adjust Knob";
-const char LCD_txt2[] = "For Start Point";
-const char LCD_txt3[] = "WindingFinished!";
-const char LCD_txt4[] = "PressOkToReturn";
-const char LCD_txt5[] = "PressOktoProceed";
-const char LCD_txt6[] = "Start Winding?";
-const char LCD_txt7[] = "Insert 1st Wire";
-const char LCD_txt8[] = "First Winding: ";
-const char LCD_txt9[] = "Insert 2nd Wire";
-const char LCD_txt10[] = "Second Winding: ";
-const char LCD_txt11[] = "Turn No:  ";
-const char LCD_txt12[] = "                ";
-
 float AWG[19][4] = {
 {16,1.63,0.0185,5.46},
 {17,1.42,0.0142,4.18},
@@ -89,7 +73,18 @@ float AWG[19][4] = {
 {34,0.234,0.000383,0.113}
 };
 
-
+const char LCD_txt1[] = "Adjust Knob";
+const char LCD_txt2[] = "For Start Point";
+const char LCD_txt3[] = "WindingFinished!";
+const char LCD_txt4[] = "PressOkToReturn";
+const char LCD_txt5[] = "PressOktoProceed";
+const char LCD_txt6[] = "Start Winding?";
+const char LCD_txt7[] = "Insert 1st Wire";
+const char LCD_txt8[] = "First Winding: ";
+const char LCD_txt9[] = "Insert 2nd Wire";
+const char LCD_txt10[] = "Second Winding: ";
+const char LCD_txt11[] = "Turn No:  ";
+const char LCD_txt12[] = "                ";
 
 
 void IDisplay(char *a, int b,char *c);
@@ -99,45 +94,38 @@ void Compute();
 void WindingProcess(int,int,float);
 
 volatile unsigned int MenuNo,TurnCount,RunStepper;
-int MaxMenu,
- EnableInputs,
+int EnableInputs,
  CountingOn,
  Pulse,
- test,
- RBPORTCHANGE,
  i,x,
  temp;
+const int MaxMenu = 27;
 char itext[7],
  ftext[15];
 unsigned char state;
-
 
 
 char* txttoram(const char* ctxt){
  static char txt[20];
  char i;
  for(i =0; txt[i] = ctxt[i]; i++);
-
  return txt;
 }
 char* txttoram2(const char* ctxt){
  static char txt[20];
  char i;
  for(i =0; txt[i] = ctxt[i]; i++);
-
  return txt;
 }
+
 
 void ftswd(float f, char * txt, char dec) {
  unsigned long n;
  short i = 0, j, tmp = 0, len = dec;
  unsigned long p[10] = {1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000};
-
  n = f * p[dec];
-
  if (n < p[dec])
  tmp = 1;
-
  do {
  if (i == dec) {
  txt[i++] = '.';
@@ -146,12 +134,9 @@ void ftswd(float f, char * txt, char dec) {
  txt[i++] = n % 10 + '0';
  n /= 10;
  } while((len-- > 0) || n);
-
  if (tmp)
  txt[i++] = '0';
-
  txt[i] = '\0';
-
  for (j = i - 1, i = 0; i < j; i++, j--)
  tmp = txt[i], txt[i] = txt[j], txt[j] = tmp;
 }
@@ -167,12 +152,11 @@ void steppertest(int NoOfPulses){
 void stepper(int NoOfPulses){
  for(pulse = 0; pulse <= NoOfPulses; pulse++){
  latc.f1 = 1;
- delay_us(100);
+ delay_us(80);
  latc.f1 = 0;
- delay_us(100);
+ delay_us(80);
  }
 }
-
 
 void main() {
 TRISA = 0b000000;
@@ -204,36 +188,38 @@ delay_ms(100);
 UCON.USBEN = 0;
 UCFG.UTRDIS = 1;
 
-
-portc.f0 = 0;
+latc.f0 = 0;
 RunStepper = 0;
 
-portc.f7 = 0;
-portc.f6 = 0;
+latc.f7 = 0;
+latc.f6 = 0;
 
-
+Lcd_Cmd(_LCD_CURSOR_OFF);
 Lcd_Cmd(_Lcd_Clear);
-LCD_Out(1,3,"Transformer");
-LCD_Out(2,4,"Coil Winder");
-delay_ms(500);
-Lcd_Cmd(_Lcd_Clear);
-LCD_Out(1,2,"Enter");
-LCD_Out(2,2,"Specifications");
-delay_ms(500);
-
-
+LCD_Out(1,16,"Transformer Coil");
+LCD_Out(2,17," Winding Machine");
+delay_ms(200);
+for(i=0; i<32; i++) {
+ Lcd_Cmd(_LCD_SHIFT_LEFT);
+ delay_ms(150);
+ }
+LCD_Cmd(_LCD_CLEAR);
+for(i=0; i<4; i++) {
+ LCD_Out(1,2,"Enter");
+ LCD_Out(2,2,"Specifications");
+ delay_ms(250);
+ LCD_Cmd(_LCD_CLEAR);
+ delay_ms(250);
+ }
 
 
 CountingOn = 0;
-MaxMenu = 30;
 MenuNo = 0;
-delay_ms(500);
-
 
  for(;;) {
+ delay_ms(200);
  EnableInputs = 1;
  if(MenuNo > MaxMenu) MenuNo = 0;
- Lcd_Cmd(_LCD_CURSOR_OFF);
  switch (MenuNo) {
  case 0:
  IDisplay(txttoram(ParameterName[MenuNo]),IParameter[MenuNo],Unit[0]);
@@ -305,7 +291,7 @@ delay_ms(500);
  break;
  case 21:
  IDisplay(txttoram(LCD_txt8),IParameter[7],txttoram2(LCD_txt11));
- WindingProcess(FParameter[11],FParameter[22],FParameter[18]);
+ WindingProcess(FParameter[11],FParameter[20],FParameter[18]);
  break;
  case 22:
  IDisplay(txttoram(LCD_txt3),IParameter[7],txttoram2(LCD_txt5));
@@ -327,7 +313,7 @@ delay_ms(500);
  break;
  case 26:
  IDisplay(txttoram(LCD_txt10),IParameter[7],txttoram2(LCD_txt11));
- WindingProcess(FParameter[12],FParameter[23],FParameter[19]);
+ WindingProcess(FParameter[12],FParameter[21],FParameter[19]);
  break;
  case 27:
  IDisplay(txttoram(LCD_txt3),IParameter[7],txttoram2(LCD_txt4));
@@ -359,7 +345,8 @@ void interrupt() {
  if (Button(&PORTB,1,150,1)) {
  MenuNo = MenuNo + 1;
  if (MenuNo >= MaxMenu) MenuNo = 0;
- if (MenuNo >= 7 && portc.f5 == 0) MenuNo = 23;
+ if (MenuNo >= 7 && portc.f5 == 0) MenuNo = 18;
+ if (MenuNo == 18 && portc.f5 == 0) MenuNo = 23;
  }
  }
  INTCON3.INT1IF = 0;
@@ -413,7 +400,6 @@ void interrupt() {
  }
  prevState = state;
  }
- latb = temp;
  INTCON.RBIF = 0;
 
 
@@ -421,7 +407,7 @@ void interrupt() {
 void Compute() {
  float UsedArea,Weight1,Weight2,I1,I2,SectionKernel,TurnsPerLayer1,TurnsPerLayer2;
  float WeightWire1,WeightWire2,AvailableArea,diameter1,diameter2;
- float Pulse1st,Pulse2nd,NoOfTurns1,NoOfTurns2,WindingLength,microstep;
+ float Pulse1st,Pulse2nd,NoOfTurns1,NoOfTurns2,WindingLength,microstep1,microstep2;
  int PrimaryGauge,SecondaryGauge,Perimeter,CoreWidth,CoreLength,WindingHeight;
  int V1,V2,Power;
  EnableInputs = 0;
@@ -435,8 +421,9 @@ void Compute() {
  CoreLength = IParameter[4];
  WindingHeight = IParameter[5];
  WindingLength = (float)IParameter[6];
- WindingLength = WindingLength - 0.25f;
- Microstep = 310.0f;
+ WindingLength = WindingLength - 0.20f;
+ Microstep1 = 310.0f;
+ Microstep2 = 290.0f;
  Lcd_Cmd(_Lcd_Clear);
  Lcd_Out(1,1,"Computing");
 
@@ -461,19 +448,19 @@ void Compute() {
 
 
 
- for(i=18;;i--) {
+ for(i=18; ;i--) {
  if(I1 < AWG[i][3]) {
  PrimaryGauge = AWG[i-1][0] ;
- Pulse1st = AWG[i-1][1]*(microstep);
- TurnsPerLayer1 = (float)WindingLength/AWG[i - 1][1];
- diameter1 = AWG[i - 1][1];
+ Pulse1st = AWG[i-1][1]*(microstep1);
+ TurnsPerLayer1 = (float)WindingLength/AWG[i-1][1];
+ diameter1 = AWG[i-1][1];
  break;
  }
  }
- for(i=18;;i--) {
+ for(i=18; ;i--) {
  if(I2 < AWG[i][3]) {
  SecondaryGauge = AWG[i-1][0];
- Pulse2nd = AWG[i-1][1]*(microstep);
+ Pulse2nd = AWG[i-1][1]*(microstep2);
  TurnsPerLayer2 = (float)WindingLength/AWG[i-1][1];
  diameter2 = AWG[i-1][1];
  break;
@@ -486,6 +473,7 @@ void Compute() {
  Perimeter = (2*CoreWidth) + (2*CoreLength);
  Lcd_Chr_Cp('.');
  delay_ms(100);
+
 
 
 
@@ -511,16 +499,14 @@ void Compute() {
  FParameter[17] = AvailableArea;
  FParameter[18] = TurnsPerLayer1;
  FParameter[19] = TurnsPerLayer2;
- FParameter[22] = Pulse1st;
- FParameter[23] = Pulse2nd;
+ FParameter[20] = Pulse1st;
+ FParameter[21] = Pulse2nd;
  Lcd_Chr_Cp('.');
- delay_ms(400);
-
+ delay_ms(200);
  Lcd_Cmd(_Lcd_Clear);
  MenuNo = MenuNo + 1;
  EnableInputs = 1;
-
- delay_ms(400);
+ delay_ms(200);
 }
 
 void IDisplay(char *a,int b,char *c) {
@@ -554,12 +540,11 @@ TurnCount = 0;
 nLayers = TurnsPerLayer;
 latc.f0 = 0;
 latc.f2 = 0;
-
 latc.f6 = 1;
 delay_ms(50);
 latc.f7 = 1;
- do {
 
+ do {
  if(Runstepper == 1) {
  RunStepper = 0;
  Stepper(PulsesPerTurn);
@@ -570,14 +555,12 @@ latc.f7 = 1;
  nlayers = nlayers + TurnsPerLayer;
  portc.f2 = ~portc.f2;
  }
-
  }
  while (TurnCount < xturns);
 
 latc.f7 = 0;
 delay_ms(50);
 latc.f6 = 0;
-
 
 CountingOn = 0;
 EnableInputs = 1;
