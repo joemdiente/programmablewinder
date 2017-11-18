@@ -2318,7 +2318,7 @@ L__interrupt190:
 	MOVLW       hi_addr(PORTB+0)
 	MOVWF       FARG_Button_port+1 
 	CLRF        FARG_Button_pin+0 
-	MOVLW       150
+	MOVLW       100
 	MOVWF       FARG_Button_time_ms+0 
 	MOVLW       1
 	MOVWF       FARG_Button_active_state+0 
@@ -2413,7 +2413,7 @@ L__interrupt189:
 	MOVWF       FARG_Button_port+1 
 	MOVLW       1
 	MOVWF       FARG_Button_pin+0 
-	MOVLW       150
+	MOVLW       100
 	MOVWF       FARG_Button_time_ms+0 
 	MOVLW       1
 	MOVWF       FARG_Button_active_state+0 
@@ -3820,6 +3820,407 @@ L_Compute153:
 	BRA         L_Compute153
 	NOP
 	NOP
+	MOVF        Compute_CoreWidth_L0+0, 0 
+	MOVWF       R0 
+	MOVF        Compute_CoreWidth_L0+1, 0 
+	MOVWF       R1 
+	MOVF        Compute_CoreLength_L0+0, 0 
+	MOVWF       R4 
+	MOVF        Compute_CoreLength_L0+1, 0 
+	MOVWF       R5 
+	CALL        _Mul_16X16_U+0, 0
+	CALL        _int2double+0, 0
+	MOVF        Compute_WindingLength_L0+0, 0 
+	MOVWF       R4 
+	MOVF        Compute_WindingLength_L0+1, 0 
+	MOVWF       R5 
+	MOVF        Compute_WindingLength_L0+2, 0 
+	MOVWF       R6 
+	MOVF        Compute_WindingLength_L0+3, 0 
+	MOVWF       R7 
+	CALL        _Mul_32x32_FP+0, 0
+	MOVF        R0, 0 
+	MOVWF       Compute_VolumeSpace_L0+0 
+	MOVF        R1, 0 
+	MOVWF       Compute_VolumeSpace_L0+1 
+	MOVF        R2, 0 
+	MOVWF       Compute_VolumeSpace_L0+2 
+	MOVF        R3, 0 
+	MOVWF       Compute_VolumeSpace_L0+3 
+	MOVF        Compute_TurnsPerLayer1_L0+0, 0 
+	MOVWF       R4 
+	MOVF        Compute_TurnsPerLayer1_L0+1, 0 
+	MOVWF       R5 
+	MOVF        Compute_TurnsPerLayer1_L0+2, 0 
+	MOVWF       R6 
+	MOVF        Compute_TurnsPerLayer1_L0+3, 0 
+	MOVWF       R7 
+	MOVF        Compute_NoOfTurns1_L0+0, 0 
+	MOVWF       R0 
+	MOVF        Compute_NoOfTurns1_L0+1, 0 
+	MOVWF       R1 
+	MOVF        Compute_NoOfTurns1_L0+2, 0 
+	MOVWF       R2 
+	MOVF        Compute_NoOfTurns1_L0+3, 0 
+	MOVWF       R3 
+	CALL        _Div_32x32_FP+0, 0
+	MOVLW       0
+	MOVWF       R4 
+	MOVLW       0
+	MOVWF       R5 
+	MOVLW       0
+	MOVWF       R6 
+	MOVLW       128
+	MOVWF       R7 
+	CALL        _Mul_32x32_FP+0, 0
+	MOVF        Compute_diameter1_L0+0, 0 
+	MOVWF       R4 
+	MOVF        Compute_diameter1_L0+1, 0 
+	MOVWF       R5 
+	MOVF        Compute_diameter1_L0+2, 0 
+	MOVWF       R6 
+	MOVF        Compute_diameter1_L0+3, 0 
+	MOVWF       R7 
+	CALL        _Mul_32x32_FP+0, 0
+	MOVF        R0, 0 
+	MOVWF       FLOC__Compute+0 
+	MOVF        R1, 0 
+	MOVWF       FLOC__Compute+1 
+	MOVF        R2, 0 
+	MOVWF       FLOC__Compute+2 
+	MOVF        R3, 0 
+	MOVWF       FLOC__Compute+3 
+	MOVF        Compute_CoreLength_L0+0, 0 
+	MOVWF       R0 
+	MOVF        Compute_CoreLength_L0+1, 0 
+	MOVWF       R1 
+	CALL        _int2double+0, 0
+	MOVF        FLOC__Compute+0, 0 
+	MOVWF       R4 
+	MOVF        FLOC__Compute+1, 0 
+	MOVWF       R5 
+	MOVF        FLOC__Compute+2, 0 
+	MOVWF       R6 
+	MOVF        FLOC__Compute+3, 0 
+	MOVWF       R7 
+	CALL        _Add_32x32_FP+0, 0
+	MOVF        R0, 0 
+	MOVWF       FARG_pow_x+0 
+	MOVF        R1, 0 
+	MOVWF       FARG_pow_x+1 
+	MOVF        R2, 0 
+	MOVWF       FARG_pow_x+2 
+	MOVF        R3, 0 
+	MOVWF       FARG_pow_x+3 
+	MOVLW       0
+	MOVWF       FARG_pow_y+0 
+	MOVLW       0
+	MOVWF       FARG_pow_y+1 
+	MOVLW       0
+	MOVWF       FARG_pow_y+2 
+	MOVLW       128
+	MOVWF       FARG_pow_y+3 
+	CALL        _pow+0, 0
+	MOVF        Compute_WindingLength_L0+0, 0 
+	MOVWF       R4 
+	MOVF        Compute_WindingLength_L0+1, 0 
+	MOVWF       R5 
+	MOVF        Compute_WindingLength_L0+2, 0 
+	MOVWF       R6 
+	MOVF        Compute_WindingLength_L0+3, 0 
+	MOVWF       R7 
+	CALL        _Mul_32x32_FP+0, 0
+	MOVF        Compute_VolumeSpace_L0+0, 0 
+	MOVWF       R4 
+	MOVF        Compute_VolumeSpace_L0+1, 0 
+	MOVWF       R5 
+	MOVF        Compute_VolumeSpace_L0+2, 0 
+	MOVWF       R6 
+	MOVF        Compute_VolumeSpace_L0+3, 0 
+	MOVWF       R7 
+	CALL        _Sub_32x32_FP+0, 0
+	MOVF        R0, 0 
+	MOVWF       Compute_VolumeWire1_L0+0 
+	MOVF        R1, 0 
+	MOVWF       Compute_VolumeWire1_L0+1 
+	MOVF        R2, 0 
+	MOVWF       Compute_VolumeWire1_L0+2 
+	MOVF        R3, 0 
+	MOVWF       Compute_VolumeWire1_L0+3 
+	MOVF        Compute_TurnsPerLayer2_L0+0, 0 
+	MOVWF       R4 
+	MOVF        Compute_TurnsPerLayer2_L0+1, 0 
+	MOVWF       R5 
+	MOVF        Compute_TurnsPerLayer2_L0+2, 0 
+	MOVWF       R6 
+	MOVF        Compute_TurnsPerLayer2_L0+3, 0 
+	MOVWF       R7 
+	MOVF        Compute_NoOfTurns2_L0+0, 0 
+	MOVWF       R0 
+	MOVF        Compute_NoOfTurns2_L0+1, 0 
+	MOVWF       R1 
+	MOVF        Compute_NoOfTurns2_L0+2, 0 
+	MOVWF       R2 
+	MOVF        Compute_NoOfTurns2_L0+3, 0 
+	MOVWF       R3 
+	CALL        _Div_32x32_FP+0, 0
+	MOVLW       0
+	MOVWF       R4 
+	MOVLW       0
+	MOVWF       R5 
+	MOVLW       0
+	MOVWF       R6 
+	MOVLW       128
+	MOVWF       R7 
+	CALL        _Mul_32x32_FP+0, 0
+	MOVF        Compute_diameter2_L0+0, 0 
+	MOVWF       R4 
+	MOVF        Compute_diameter2_L0+1, 0 
+	MOVWF       R5 
+	MOVF        Compute_diameter2_L0+2, 0 
+	MOVWF       R6 
+	MOVF        Compute_diameter2_L0+3, 0 
+	MOVWF       R7 
+	CALL        _Mul_32x32_FP+0, 0
+	MOVF        R0, 0 
+	MOVWF       FLOC__Compute+0 
+	MOVF        R1, 0 
+	MOVWF       FLOC__Compute+1 
+	MOVF        R2, 0 
+	MOVWF       FLOC__Compute+2 
+	MOVF        R3, 0 
+	MOVWF       FLOC__Compute+3 
+	MOVF        Compute_CoreLength_L0+0, 0 
+	MOVWF       R0 
+	MOVF        Compute_CoreLength_L0+1, 0 
+	MOVWF       R1 
+	CALL        _int2double+0, 0
+	MOVF        FLOC__Compute+0, 0 
+	MOVWF       R4 
+	MOVF        FLOC__Compute+1, 0 
+	MOVWF       R5 
+	MOVF        FLOC__Compute+2, 0 
+	MOVWF       R6 
+	MOVF        FLOC__Compute+3, 0 
+	MOVWF       R7 
+	CALL        _Add_32x32_FP+0, 0
+	MOVF        R0, 0 
+	MOVWF       FARG_pow_x+0 
+	MOVF        R1, 0 
+	MOVWF       FARG_pow_x+1 
+	MOVF        R2, 0 
+	MOVWF       FARG_pow_x+2 
+	MOVF        R3, 0 
+	MOVWF       FARG_pow_x+3 
+	MOVLW       0
+	MOVWF       FARG_pow_y+0 
+	MOVLW       0
+	MOVWF       FARG_pow_y+1 
+	MOVLW       0
+	MOVWF       FARG_pow_y+2 
+	MOVLW       128
+	MOVWF       FARG_pow_y+3 
+	CALL        _pow+0, 0
+	MOVF        R0, 0 
+	MOVWF       FLOC__Compute+4 
+	MOVF        R1, 0 
+	MOVWF       FLOC__Compute+5 
+	MOVF        R2, 0 
+	MOVWF       FLOC__Compute+6 
+	MOVF        R3, 0 
+	MOVWF       FLOC__Compute+7 
+	MOVF        Compute_TurnsPerLayer1_L0+0, 0 
+	MOVWF       R4 
+	MOVF        Compute_TurnsPerLayer1_L0+1, 0 
+	MOVWF       R5 
+	MOVF        Compute_TurnsPerLayer1_L0+2, 0 
+	MOVWF       R6 
+	MOVF        Compute_TurnsPerLayer1_L0+3, 0 
+	MOVWF       R7 
+	MOVF        Compute_NoOfTurns1_L0+0, 0 
+	MOVWF       R0 
+	MOVF        Compute_NoOfTurns1_L0+1, 0 
+	MOVWF       R1 
+	MOVF        Compute_NoOfTurns1_L0+2, 0 
+	MOVWF       R2 
+	MOVF        Compute_NoOfTurns1_L0+3, 0 
+	MOVWF       R3 
+	CALL        _Div_32x32_FP+0, 0
+	MOVLW       0
+	MOVWF       R4 
+	MOVLW       0
+	MOVWF       R5 
+	MOVLW       0
+	MOVWF       R6 
+	MOVLW       128
+	MOVWF       R7 
+	CALL        _Mul_32x32_FP+0, 0
+	MOVF        Compute_diameter1_L0+0, 0 
+	MOVWF       R4 
+	MOVF        Compute_diameter1_L0+1, 0 
+	MOVWF       R5 
+	MOVF        Compute_diameter1_L0+2, 0 
+	MOVWF       R6 
+	MOVF        Compute_diameter1_L0+3, 0 
+	MOVWF       R7 
+	CALL        _Mul_32x32_FP+0, 0
+	MOVF        R0, 0 
+	MOVWF       FLOC__Compute+0 
+	MOVF        R1, 0 
+	MOVWF       FLOC__Compute+1 
+	MOVF        R2, 0 
+	MOVWF       FLOC__Compute+2 
+	MOVF        R3, 0 
+	MOVWF       FLOC__Compute+3 
+	MOVF        Compute_CoreLength_L0+0, 0 
+	MOVWF       R0 
+	MOVF        Compute_CoreLength_L0+1, 0 
+	MOVWF       R1 
+	CALL        _int2double+0, 0
+	MOVF        FLOC__Compute+0, 0 
+	MOVWF       R4 
+	MOVF        FLOC__Compute+1, 0 
+	MOVWF       R5 
+	MOVF        FLOC__Compute+2, 0 
+	MOVWF       R6 
+	MOVF        FLOC__Compute+3, 0 
+	MOVWF       R7 
+	CALL        _Add_32x32_FP+0, 0
+	MOVF        R0, 0 
+	MOVWF       FARG_pow_x+0 
+	MOVF        R1, 0 
+	MOVWF       FARG_pow_x+1 
+	MOVF        R2, 0 
+	MOVWF       FARG_pow_x+2 
+	MOVF        R3, 0 
+	MOVWF       FARG_pow_x+3 
+	MOVLW       0
+	MOVWF       FARG_pow_y+0 
+	MOVLW       0
+	MOVWF       FARG_pow_y+1 
+	MOVLW       0
+	MOVWF       FARG_pow_y+2 
+	MOVLW       128
+	MOVWF       FARG_pow_y+3 
+	CALL        _pow+0, 0
+	MOVF        FLOC__Compute+4, 0 
+	MOVWF       R4 
+	MOVF        FLOC__Compute+5, 0 
+	MOVWF       R5 
+	MOVF        FLOC__Compute+6, 0 
+	MOVWF       R6 
+	MOVF        FLOC__Compute+7, 0 
+	MOVWF       R7 
+	CALL        _Add_32x32_FP+0, 0
+	MOVF        Compute_WindingLength_L0+0, 0 
+	MOVWF       R4 
+	MOVF        Compute_WindingLength_L0+1, 0 
+	MOVWF       R5 
+	MOVF        Compute_WindingLength_L0+2, 0 
+	MOVWF       R6 
+	MOVF        Compute_WindingLength_L0+3, 0 
+	MOVWF       R7 
+	CALL        _Mul_32x32_FP+0, 0
+	MOVF        R0, 0 
+	MOVWF       FLOC__Compute+0 
+	MOVF        R1, 0 
+	MOVWF       FLOC__Compute+1 
+	MOVF        R2, 0 
+	MOVWF       FLOC__Compute+2 
+	MOVF        R3, 0 
+	MOVWF       FLOC__Compute+3 
+	MOVF        Compute_VolumeSpace_L0+0, 0 
+	MOVWF       R0 
+	MOVF        Compute_VolumeSpace_L0+1, 0 
+	MOVWF       R1 
+	MOVF        Compute_VolumeSpace_L0+2, 0 
+	MOVWF       R2 
+	MOVF        Compute_VolumeSpace_L0+3, 0 
+	MOVWF       R3 
+	MOVF        Compute_VolumeWire1_L0+0, 0 
+	MOVWF       R4 
+	MOVF        Compute_VolumeWire1_L0+1, 0 
+	MOVWF       R5 
+	MOVF        Compute_VolumeWire1_L0+2, 0 
+	MOVWF       R6 
+	MOVF        Compute_VolumeWire1_L0+3, 0 
+	MOVWF       R7 
+	CALL        _Add_32x32_FP+0, 0
+	MOVF        R0, 0 
+	MOVWF       R4 
+	MOVF        R1, 0 
+	MOVWF       R5 
+	MOVF        R2, 0 
+	MOVWF       R6 
+	MOVF        R3, 0 
+	MOVWF       R7 
+	MOVF        FLOC__Compute+0, 0 
+	MOVWF       R0 
+	MOVF        FLOC__Compute+1, 0 
+	MOVWF       R1 
+	MOVF        FLOC__Compute+2, 0 
+	MOVWF       R2 
+	MOVF        FLOC__Compute+3, 0 
+	MOVWF       R3 
+	CALL        _Sub_32x32_FP+0, 0
+	MOVF        R0, 0 
+	MOVWF       FLOC__Compute+0 
+	MOVF        R1, 0 
+	MOVWF       FLOC__Compute+1 
+	MOVF        R2, 0 
+	MOVWF       FLOC__Compute+2 
+	MOVF        R3, 0 
+	MOVWF       FLOC__Compute+3 
+	MOVF        Compute_VolumeWire1_L0+0, 0 
+	MOVWF       R0 
+	MOVF        Compute_VolumeWire1_L0+1, 0 
+	MOVWF       R1 
+	MOVF        Compute_VolumeWire1_L0+2, 0 
+	MOVWF       R2 
+	MOVF        Compute_VolumeWire1_L0+3, 0 
+	MOVWF       R3 
+	MOVLW       232
+	MOVWF       R4 
+	MOVLW       82
+	MOVWF       R5 
+	MOVLW       22
+	MOVWF       R6 
+	MOVLW       110
+	MOVWF       R7 
+	CALL        _Mul_32x32_FP+0, 0
+	MOVF        R0, 0 
+	MOVWF       Compute_WeightWire1_L0+0 
+	MOVF        R1, 0 
+	MOVWF       Compute_WeightWire1_L0+1 
+	MOVF        R2, 0 
+	MOVWF       Compute_WeightWire1_L0+2 
+	MOVF        R3, 0 
+	MOVWF       Compute_WeightWire1_L0+3 
+	MOVF        FLOC__Compute+0, 0 
+	MOVWF       R0 
+	MOVF        FLOC__Compute+1, 0 
+	MOVWF       R1 
+	MOVF        FLOC__Compute+2, 0 
+	MOVWF       R2 
+	MOVF        FLOC__Compute+3, 0 
+	MOVWF       R3 
+	MOVLW       232
+	MOVWF       R4 
+	MOVLW       82
+	MOVWF       R5 
+	MOVLW       22
+	MOVWF       R6 
+	MOVLW       110
+	MOVWF       R7 
+	CALL        _Mul_32x32_FP+0, 0
+	MOVF        R0, 0 
+	MOVWF       Compute_WeightWire2_L0+0 
+	MOVF        R1, 0 
+	MOVWF       Compute_WeightWire2_L0+1 
+	MOVF        R2, 0 
+	MOVWF       Compute_WeightWire2_L0+2 
+	MOVF        R3, 0 
+	MOVWF       Compute_WeightWire2_L0+3 
 	MOVLW       46
 	MOVWF       FARG_Lcd_Chr_CP_out_char+0 
 	CALL        _Lcd_Chr_CP+0, 0

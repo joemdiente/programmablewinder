@@ -328,7 +328,7 @@ void interrupt() {
  temp = portb;
 
  if (INTCON.INT0IF == 1 && EnableInputs == 1){
- if (Button(&PORTB,0,150,1)) {
+ if (Button(&PORTB,0,100,1)) {
  MenuNo = MenuNo - 1;
  switch (MenuNo) {
  case 7: MenuNo = 6; break;
@@ -342,7 +342,7 @@ void interrupt() {
 
 
  if (INTCON3.INT1IF == 1 && EnableInputs == 1){
- if (Button(&PORTB,1,150,1)) {
+ if (Button(&PORTB,1,100,1)) {
  MenuNo = MenuNo + 1;
  if (MenuNo >= MaxMenu) MenuNo = 0;
  if (MenuNo >= 7 && portc.f5 == 0) MenuNo = 18;
@@ -405,8 +405,8 @@ void interrupt() {
 
 }
 void Compute() {
- float UsedArea,Weight1,Weight2,I1,I2,SectionKernel,TurnsPerLayer1,TurnsPerLayer2;
- float WeightWire1,WeightWire2,AvailableArea,diameter1,diameter2;
+ float I1,I2,SectionKernel,TurnsPerLayer1,TurnsPerLayer2;
+ float WeightWire1,WeightWire2,AvailableArea,diameter1,diameter2,VolumeSpace,VolumeWire1,VolumeWire2;
  float Pulse1st,Pulse2nd,NoOfTurns1,NoOfTurns2,WindingLength,microstep1,microstep2;
  int PrimaryGauge,SecondaryGauge,Perimeter,CoreWidth,CoreLength,WindingHeight;
  int V1,V2,Power;
@@ -476,7 +476,11 @@ void Compute() {
 
 
 
-
+ VolumeSpace = CoreWidth*CoreLength*WindingLength;
+ VolumeWire1 = (pow(2*(NoOfTurns1/TurnsPerLayer1)*diameter1+(float)CoreLength,2)*(WindingLength)) - (VolumeSpace);
+ VolumeWire2 = ((pow(2*(NoOfTurns2/TurnsPerLayer2)*diameter2+(float)CoreLength,2)+pow(2*(NoOfTurns1/TurnsPerLayer1)*diameter1+(float)CoreLength,2))*(WindingLength)) - (VolumeSpace+VolumeWire1);
+ WeightWire1 = VolumeWire1*0.00000896f;
+ WeightWire2 = VolumeWire2*0.00000896f;
 
  Lcd_Chr_Cp('.');
  delay_ms(100);
